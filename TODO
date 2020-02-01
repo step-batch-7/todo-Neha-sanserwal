@@ -1,0 +1,9 @@
+--DONE-- * create folder with docs containing todo.json.
+--DONE-- * create a server which return 404 initially.
+--DONE-- * extract a class app with the methods get post 
+--DONE-- * add serve method to class app.
+--DONE-- * create handlers which return the following ==
+              * handler for file not found.
+              * handler for method not allowed.
+              * handler for reading the body.
+--DONE-- * create reader and isFIleAllowed.
