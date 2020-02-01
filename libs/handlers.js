@@ -2,7 +2,6 @@ const fs = require('fs');
 const { App } = require('./app.js');
 
 const STATIC_DIR = `${__dirname}/../public`;
-const TODO_FILE = `${__dirname}/../docs/todos.json`;
 
 const getFileExtension = function(fileName) {
   const fileExt = fileName.split('.').pop();
@@ -46,7 +45,7 @@ const generateGetResponse = function(url, res, body) {
   res.end();
 };
 
-const loadResponseText = function(req, res, next) {
+const loadStaticResponse = function(req, res, next) {
   const completeUrl = getCompleteUrl(req.url);
   if (isFileNotAvailable(completeUrl)) {
     next();
@@ -68,7 +67,7 @@ const methodNotAllowed = function(req, res) {
 const app = new App();
 
 app.use(readBody);
-app.get('/', loadResponseText);
+app.get('/', loadStaticResponse);
 app.get('', notFound);
 app.use(methodNotAllowed);
 
