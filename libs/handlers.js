@@ -2,6 +2,8 @@ const fs = require('fs');
 const { App } = require('./app.js');
 
 const STATIC_DIR = `${__dirname}/../public`;
+const TODO_FILE = `${__dirname}/../docs/todos.json`;
+const LIST_TEMPLATE = `<div class="item"><input type="checkbox" />_task_</div>`;
 
 const getFileExtension = function(fileName) {
   const fileExt = fileName.split('.').pop();
@@ -55,6 +57,40 @@ const loadStaticResponse = function(req, res, next) {
   generateGetResponse(completeUrl, res, body);
 };
 
+const collectTasks = function(list) {
+  let listTemplate = [];
+  for (task of list) {
+    listTemplate.push(LIST_TEMPLATE.replace('_task_', task));
+  }
+  return listTemplate.join('\n');
+};
+
+const readTodoList = function(todoList) {
+  let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
+  for (const [key, value] in Object.entries(todoList)) {
+    if (key !== 'date') {
+      todoTemplate = todoTemplate.replace(`__todoItems__`, collectTasks(value));
+    }
+    todoTemplate = todoTemplate.replace(`__date__`, value);
+  }
+  return todoTemplate;
+};
+
+const loadOlderTodoList = function(todoFile) {
+  list = loadFile(todoFile, 'utf8');
+  return JSON.parse(list);
+};
+
+const serveTodoPage = function(req, res, next) {
+  const completeUrl = getCompleteUrl(req.url);
+  let todoPage = loadFile(completeUrl, 'utf8');
+  const allTodo = loadOlderTodoList(TODO_FILE);
+  const todoTemplate = allTodo.map(readTodoList);
+  console.log(todoTemplate);
+  todoPage = todoPage.replace('__todo__', todoTemplate.join('\n'));
+  generateGetResponse(completeUrl, res, todoPage);
+};
+
 const notFound = function(req, res) {
   res.writeHead('404', 'NOT FOUND');
   res.end();
@@ -67,7 +103,8 @@ const methodNotAllowed = function(req, res) {
 const app = new App();
 
 app.use(readBody);
-app.get('/', loadStaticResponse);
+app.get('/', serveTodoPage);
+app.get('', loadStaticResponse);
 app.get('', notFound);
 app.use(methodNotAllowed);
 

@@ -14,3 +14,5 @@
               with the input box and button - form
               list of todo with the date on top header and the todo with the check box.
 --DONE-- * add styling to the home page.
+
+--DONE-- * create serverTodo page which will load data from the json into index html.
