@@ -17,10 +17,17 @@
 .input-box {
   display: flex;
   flex-flow: column;
-  width: 100%;
+  margin: 0 auto;
+  width: 70%;
+  border-radius: 5px;
   flex-wrap: wrap;
-  padding-bottom: 5px;
+  font-size: 15px;
+  height: 40px;
+  padding: 5px;
+  margin-bottom: 9px;
+  border: 0.5px solid lightgray;
 }
+
 .todo-form {
   width: 100%;
   margin: 0 auto;
@@ -28,4 +35,47 @@
   display: flex;
   flex-flow: column;
   justify-items: center;
+}
+.submit-btn {
+  width: 10%;
+  margin: 0 auto;
+  height: 30px;
+  border-radius: 5px;
+  border: 1.3px solid #09d3ac;
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.submit-btn:hover {
+  background: #09d3ac;
+
+  color: white;
+}
+.todo-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  width: 100%;
+  flex-flow: row;
+  justify-content: space-evenly;
+}
+.todos {
+  border: 1px solid #09d3ac;
+  display: flex;
+  flex-flow: column;
+  min-height: 100px;
+  flex-wrap: wrap;
+  width: 300px;
+  border-radius: 5px;
+}
+.head {
+  background: #09d3ac;
+  padding: 5px;
+  color: white;
+}
+.item {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  padding: 5px;
 }
