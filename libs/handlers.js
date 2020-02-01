@@ -67,7 +67,7 @@ const collectTasks = function(list) {
 
 const readTodoList = function(todoList) {
   let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
-  for (const [key, value] in Object.entries(todoList)) {
+  for (const [key, value] of Object.entries(todoList)) {
     if (key !== 'date') {
       todoTemplate = todoTemplate.replace(`__todoItems__`, collectTasks(value));
     }
