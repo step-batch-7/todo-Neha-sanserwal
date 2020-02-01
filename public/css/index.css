@@ -1,0 +1,31 @@
+.todoPage {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  margin: 0 auto;
+}
+.todoPage > .heading {
+  display: flex;
+  flex-flow: column;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  font-family: sans-serif;
+}
+.input-box {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  flex-wrap: wrap;
+  padding-bottom: 5px;
+}
+.todo-form {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  justify-items: center;
+}

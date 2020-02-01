@@ -4,28 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/css/index.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
     <title>todo app</title>
   </head>
   <body>
-    <h1>POST IT</h1>
-    <form action="/" method="POST">
-      <h2>Add your todo here ...</h2>
-      <input type="text" placeholder="buy milk" />
-      <button type="submit">Submit</button>
-    </form>
-    <div>
-      <div>
-        <div>12/30/2019</div>
-        <div><input type="checkbox" />Buy milk to way home.</div>
-        <div><input type="checkbox" />Buy milk to way home.</div>
+    <div class="todoPage">
+      <div class="heading">
+        <h1>POST IT</h1>
       </div>
-      <div>
-        <div>12/30/2019</div>
-        <div><input type="checkbox" />Do laundary.</div>
-      </div>
-      <div>
-        <div>12/30/2019</div>
-        <div><input type="checkbox" />Read novel.</div>
+
+      <form class="todo-form" action="/" method="POST">
+        <h2>Add your todo here ...</h2>
+        <input class="input-box" type="text" placeholder="buy milk" />
+        <button class="submit-btn" type="submit">Submit</button>
+      </form>
+
+      <div class="todo-list">
+        <div class="todos">
+          <div class="head">12/30/2019</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+        </div>
+        <div class="todos">
+          <div class="head">12/30/2019</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+        </div>
+        <div class="todos">
+          <div class="head">12/30/2019</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+          <div class="item"><input type="checkbox" />Buy milk to way home.</div>
+        </div>
       </div>
     </div>
   </body>
