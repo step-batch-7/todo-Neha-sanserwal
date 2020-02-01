@@ -7,3 +7,9 @@
               * handler for method not allowed.
               * handler for reading the body.
 --DONE-- * create reader and isFIleAllowed.
+
+--DONE-- * create static web page with heading TODO APP, which will be rendered as home page
+--DONE-- * modified the homepage with the following ==
+              heading at top "POST IT"
+              with the input box and button - form
+              list of todo with the date on top header and the todo with the check box.
