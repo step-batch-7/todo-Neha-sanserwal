@@ -18,7 +18,6 @@ class Todo {
     const newEntry = { ...parser(`?${text}`, true).query };
     newEntry.bucketId = getRandomId();
     newEntry.todoItems = [this.parseEntryItem(newEntry)];
-    console.log();
     return newEntry;
   }
   appendTo(file, writer) {

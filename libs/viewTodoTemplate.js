@@ -1,8 +1,12 @@
+const replaceText = function(key, value, template) {
+  const pattern = new RegExp(`__${key}__`, 'g');
+  template = template.replace(pattern, value);
+  return template;
+};
 const readTask = function(task, loadFile) {
   let taskTemplate = loadFile('templates/taskTemplate.html', 'utf8');
   for (const [key, value] of Object.entries(task)) {
-    console.log('---', key, value, '\n');
-    taskTemplate = taskTemplate.replace(`__${key}__`, value);
+    taskTemplate = replaceText(key, value, taskTemplate);
   }
   return taskTemplate;
 };
@@ -18,10 +22,10 @@ const readTodoList = function(todoList) {
   let todoTemplate = this.loadFile('templates/todoTemplate.html', 'utf8');
   for (const [key, value] of Object.entries(todoList)) {
     if (key !== 'todoItems') {
-      todoTemplate = todoTemplate.replace(`__${key}__`, value);
+      todoTemplate = replaceText(key, value, todoTemplate);
     } else {
       const allTasks = collectTaskList(value, this.loadFile);
-      todoTemplate = todoTemplate.replace(`__${key}__`, allTasks);
+      todoTemplate = replaceText(key, allTasks, todoTemplate);
     }
   }
   return todoTemplate;

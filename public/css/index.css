@@ -73,6 +73,18 @@
   background: #09d3ac;
   padding: 5px;
   color: white;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.head > button {
+  color: white;
+  border: none;
+  padding: 0px;
+  font-weight: 700;
+  margin: 0px;
+  font-size: 17px;
+  background-color: transparent;
 }
 .item {
   display: flex;

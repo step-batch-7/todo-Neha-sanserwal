@@ -21,6 +21,7 @@
 --DONE-- * on submit write to the json file and redirect to same page.
 --DONE-- * extract file viewTodoTemplate for coverting data to html.
 --DONE-- * extract class Todo.
+--DONE-- * set done and undone on the click of function
 * refactor function read task and save function.
 
 * move to xmlhttprequest instead of reloading.
