@@ -28,7 +28,6 @@ const readBody = function(req, res, next) {
   let text = '';
   req.on('data', chunk => {
     text += chunk;
-    console.log(chunk);
   });
 
   req.on('end', () => {
@@ -43,10 +42,6 @@ const getCompleteUrl = function(url) {
   }
   return `${STATIC_DIR}${url}`;
 };
-const getRandomId = function() {
-  return Math.random() * 10;
-};
-
 const loadOlderTodoLogs = function(todoFile) {
   if (!fs.existsSync(todoFile)) {
     writeTo(todoFile, []);
@@ -55,20 +50,27 @@ const loadOlderTodoLogs = function(todoFile) {
   return JSON.parse(todo);
 };
 
-const saveTodo = function(req, res, next) {
-  const todo = { ...parse(`?${req.body}`, true).query };
-  newEntry = {};
-  newEntry.bucketId = getRandomId();
-  newEntry.title = todo.title;
-  newEntry.todoItems = [];
+const getRandomId = function() {
+  return Math.random() * 10;
+};
+
+const parseEntryItem = function(bucketId, text) {
   const status = '';
   const taskId = getRandomId();
-  newEntry.todoItems.push({
-    status,
-    bucketId: newEntry.bucketId,
-    taskId,
-    text: todo.task
-  });
+  return { status, taskId, bucketId, text };
+};
+
+const parseNewEntry = function(parser, text) {
+  const todo = { ...parser(`?${text}`, true).query };
+  let newEntry = {};
+  newEntry.bucketId = getRandomId();
+  newEntry.title = todo.title;
+  newEntry.todoItems = [parseEntryItem(newEntry.bucketId, todo.task)];
+  return newEntry;
+};
+
+const saveTodo = function(req, res, next) {
+  const newEntry = parseNewEntry(parse, req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   todoLogs.unshift(newEntry);
   writeTo(TODO_FILE, todoLogs);
@@ -116,15 +118,10 @@ const readTodoList = function(todoList) {
   return todoTemplate;
 };
 
-const loadOlderTodoList = function(todoFile) {
-  list = loadFile(todoFile, 'utf8');
-  return JSON.parse(list);
-};
-
 const serveTodoPage = function(req, res, next) {
   const completeUrl = getCompleteUrl(req.url);
   let todoPage = loadFile(completeUrl, 'utf8');
-  const allTodo = loadOlderTodoList(TODO_FILE);
+  const allTodo = loadOlderTodoLogs(TODO_FILE);
   const todoTemplate = allTodo.map(readTodoList);
   todoPage = todoPage.replace('__todo__', todoTemplate.join('\n'));
   generateGetResponse(completeUrl, res, todoPage);
