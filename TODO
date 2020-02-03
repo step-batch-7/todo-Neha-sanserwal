@@ -16,4 +16,7 @@
 --DONE-- * add styling to the home page.
 
 --DONE-- * create serverTodo page which will load data from the json into index html.
- * change the structure of storing the todo.
+--DONE-- * change the structure of storing the todo.
+--DONE-- * changing reading of todo.
+* on submit write to the json file.
+* refactor function read task and save function.

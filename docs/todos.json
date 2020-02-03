@@ -1,11 +1,14 @@
 [
-  { "title": "12/30/2019", "todoItems": ["buy milk", "buy milk", "buy milk"] },
   {
-    "title": "12/30/2019",
-    "todoItems": ["buy milk", "buy milk", "buy milk"]
-  },
-  {
-    "title": "12/30/2019",
-    "todoItems": ["buy milk", "buy milk", "buy milk"]
+    "bucketId": "1234",
+    "title": "first Todo",
+    "todoItems": [
+      {
+        "status": "checked",
+        "bucketId": "1234",
+        "taskId": "1",
+        "text": "buy groceries"
+      }
+    ]
   }
 ]
