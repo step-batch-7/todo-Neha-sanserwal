@@ -18,5 +18,6 @@
 --DONE-- * create serverTodo page which will load data from the json into index html.
 --DONE-- * change the structure of storing the todo.
 --DONE-- * changing reading of todo.
-* on submit write to the json file.
+--DONE-- * on submit write to the json file and redirect to same page.
 * refactor function read task and save function.
+* move to xmlhttprequest instead of reloading.

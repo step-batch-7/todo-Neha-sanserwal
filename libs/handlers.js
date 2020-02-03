@@ -1,6 +1,6 @@
 const fs = require('fs');
+const { parse } = require('url');
 const { App } = require('./app.js');
-
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
 
@@ -15,6 +15,10 @@ const loadFile = function(filePath, encoding) {
   return fs.readFileSync(filePath);
 };
 
+const writeTo = function(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data));
+};
+
 const isFileNotAvailable = function(filePath) {
   const stats = fs.existsSync(filePath) && fs.statSync(filePath);
   return !stats || !stats.isFile();
@@ -24,6 +28,7 @@ const readBody = function(req, res, next) {
   let text = '';
   req.on('data', chunk => {
     text += chunk;
+    console.log(chunk);
   });
 
   req.on('end', () => {
@@ -37,6 +42,38 @@ const getCompleteUrl = function(url) {
     return `${STATIC_DIR}/index.html`;
   }
   return `${STATIC_DIR}${url}`;
+};
+const getRandomId = function() {
+  return Math.random() * 10;
+};
+
+const loadOlderTodoLogs = function(todoFile) {
+  if (!fs.existsSync(todoFile)) {
+    writeTo(todoFile, []);
+  }
+  const todo = loadFile(todoFile);
+  return JSON.parse(todo);
+};
+
+const saveTodo = function(req, res, next) {
+  const todo = { ...parse(`?${req.body}`, true).query };
+  newEntry = {};
+  newEntry.bucketId = getRandomId();
+  newEntry.title = todo.title;
+  newEntry.todoItems = [];
+  const status = '';
+  const taskId = getRandomId();
+  newEntry.todoItems.push({
+    status,
+    bucketId: newEntry.bucketId,
+    taskId,
+    text: todo.task
+  });
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
+  todoLogs.unshift(newEntry);
+  writeTo(TODO_FILE, todoLogs);
+  res.writeHead('302', { location: '/' });
+  res.end();
 };
 
 const generateGetResponse = function(url, res, body) {
@@ -106,6 +143,7 @@ const app = new App();
 
 app.use(readBody);
 app.get('/', serveTodoPage);
+app.post('/', saveTodo);
 app.get('', loadStaticResponse);
 app.get('', notFound);
 app.use(methodNotAllowed);
