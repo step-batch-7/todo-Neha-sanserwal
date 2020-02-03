@@ -3,7 +3,7 @@ const { App } = require('./app.js');
 
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
-const LIST_TEMPLATE = `<div class="item"><input type="checkbox" />_task_</div>`;
+const LIST_TEMPLATE = `<div class="item"><input data-bucket-id = '_bucket_' type="checkbox" />_task_</div>`;
 
 const getFileExtension = function(fileName) {
   const fileExt = fileName.split('.').pop();
@@ -57,10 +57,11 @@ const loadStaticResponse = function(req, res, next) {
   generateGetResponse(completeUrl, res, body);
 };
 
-const collectTasks = function(list) {
+const collectTasks = function(list, title) {
   let listTemplate = [];
   for (task of list) {
-    listTemplate.push(LIST_TEMPLATE.replace('_task_', task));
+    let newTask = LIST_TEMPLATE.replace('_bucket_', title);
+    listTemplate.push(newTask.replace('_task_', task));
   }
   return listTemplate.join('\n');
 };
@@ -68,10 +69,13 @@ const collectTasks = function(list) {
 const readTodoList = function(todoList) {
   let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
   for (const [key, value] of Object.entries(todoList)) {
-    if (key !== 'date') {
-      todoTemplate = todoTemplate.replace(`__todoItems__`, collectTasks(value));
+    if (key !== 'title') {
+      todoTemplate = todoTemplate.replace(
+        `__todoItems__`,
+        collectTasks(value, todoList.title)
+      );
     }
-    todoTemplate = todoTemplate.replace(`__date__`, value);
+    todoTemplate = todoTemplate.replace(`__title__`, value);
   }
   return todoTemplate;
 };
@@ -86,7 +90,6 @@ const serveTodoPage = function(req, res, next) {
   let todoPage = loadFile(completeUrl, 'utf8');
   const allTodo = loadOlderTodoList(TODO_FILE);
   const todoTemplate = allTodo.map(readTodoList);
-  console.log(todoTemplate);
   todoPage = todoPage.replace('__todo__', todoTemplate.join('\n'));
   generateGetResponse(completeUrl, res, todoPage);
 };

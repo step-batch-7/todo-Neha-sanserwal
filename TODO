@@ -16,3 +16,4 @@
 --DONE-- * add styling to the home page.
 
 --DONE-- * create serverTodo page which will load data from the json into index html.
+ * change the structure of storing the todo.

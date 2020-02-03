@@ -1,11 +1,11 @@
 [
-  { "date": "12/30/2019", "todoItems": ["buy milk", "buy milk", "buy milk"] },
+  { "title": "12/30/2019", "todoItems": ["buy milk", "buy milk", "buy milk"] },
   {
-    "date": "12/30/2019",
+    "title": "12/30/2019",
     "todoItems": ["buy milk", "buy milk", "buy milk"]
   },
   {
-    "date": "12/30/2019",
+    "title": "12/30/2019",
     "todoItems": ["buy milk", "buy milk", "buy milk"]
   }
 ]
