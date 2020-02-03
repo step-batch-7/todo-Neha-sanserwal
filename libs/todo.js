@@ -1,5 +1,6 @@
 const getRandomId = function() {
-  return Math.random() * 10;
+  const randomId = Math.random() * Math.pow(10, 10);
+  return Math.floor(randomId);
 };
 class Todo {
   constructor(newEntry, logs) {
