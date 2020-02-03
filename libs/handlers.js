@@ -55,20 +55,23 @@ const loadOlderTodoLogs = function(todoFile) {
   return JSON.parse(todo);
 };
 
-const saveTodo = function(req, res, next) {
-  const todo = { ...parse(`?${req.body}`, true).query };
-  newEntry = {};
-  newEntry.bucketId = getRandomId();
-  newEntry.title = todo.title;
-  newEntry.todoItems = [];
+const parseEntryItem = function(bucketId, text) {
   const status = '';
   const taskId = getRandomId();
-  newEntry.todoItems.push({
-    status,
-    bucketId: newEntry.bucketId,
-    taskId,
-    text: todo.task
-  });
+  return { status, taskId, bucketId, text };
+};
+
+const parseNewEntry = function(parser, text) {
+  const todo = { ...parser(`?${text}`, true).query };
+  let newEntry = {};
+  newEntry.bucketId = getRandomId();
+  newEntry.title = todo.title;
+  newEntry.todoItems = [parseEntryItem(newEntry.bucketId, todo.task)];
+  return newEntry;
+};
+
+const saveTodo = function(req, res, next) {
+  const newEntry = parseNewEntry(parse, req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   todoLogs.unshift(newEntry);
   writeTo(TODO_FILE, todoLogs);
