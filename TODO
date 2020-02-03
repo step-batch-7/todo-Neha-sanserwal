@@ -19,5 +19,8 @@
 --DONE-- * change the structure of storing the todo.
 --DONE-- * changing reading of todo.
 --DONE-- * on submit write to the json file and redirect to same page.
+--DONE-- * extract file viewTodoTemplate for coverting data to html.
+--DONE-- * extract class Todo.
 * refactor function read task and save function.
+
 * move to xmlhttprequest instead of reloading.

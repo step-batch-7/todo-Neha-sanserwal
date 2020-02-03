@@ -1,6 +1,8 @@
 const fs = require('fs');
 const { parse } = require('url');
 const { App } = require('./app.js');
+const { loadTodoTemplate } = require('./viewTodoTemplate');
+const { Todo } = require('./todo');
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
 
@@ -28,7 +30,6 @@ const readBody = function(req, res, next) {
   let text = '';
   req.on('data', chunk => {
     text += chunk;
-    console.log(chunk);
   });
 
   req.on('end', () => {
@@ -43,9 +44,6 @@ const getCompleteUrl = function(url) {
   }
   return `${STATIC_DIR}${url}`;
 };
-const getRandomId = function() {
-  return Math.random() * 10;
-};
 
 const loadOlderTodoLogs = function(todoFile) {
   if (!fs.existsSync(todoFile)) {
@@ -55,26 +53,11 @@ const loadOlderTodoLogs = function(todoFile) {
   return JSON.parse(todo);
 };
 
-const parseEntryItem = function(bucketId, text) {
-  const status = '';
-  const taskId = getRandomId();
-  return { status, taskId, bucketId, text };
-};
-
-const parseNewEntry = function(parser, text) {
-  const todo = { ...parser(`?${text}`, true).query };
-  let newEntry = {};
-  newEntry.bucketId = getRandomId();
-  newEntry.title = todo.title;
-  newEntry.todoItems = [parseEntryItem(newEntry.bucketId, todo.task)];
-  return newEntry;
-};
-
 const saveTodo = function(req, res, next) {
-  const newEntry = parseNewEntry(parse, req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  todoLogs.unshift(newEntry);
-  writeTo(TODO_FILE, todoLogs);
+  let todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const newEntry = Todo.parseNewEntry(parse, req.body);
+  newTodo = new Todo(newEntry, todoLogs);
+  newTodo.appendTo(TODO_FILE, writeTo);
   res.writeHead('302', { location: '/' });
   res.end();
 };
@@ -89,48 +72,18 @@ const generateGetResponse = function(url, res, body) {
 const loadStaticResponse = function(req, res, next) {
   const completeUrl = getCompleteUrl(req.url);
   if (isFileNotAvailable(completeUrl)) {
-    next();
-    return;
+    return next();
   }
   const body = loadFile(completeUrl);
   generateGetResponse(completeUrl, res, body);
 };
 
-const collectTasks = function(todoList) {
-  let listTemplate = loadFile('templates/taskTemplate.html', 'utf8');
-  for (task of todoList) {
-    for (const [key, value] of Object.entries(task)) {
-      listTemplate = listTemplate.replace(`__${key}__`, value);
-    }
-  }
-  return listTemplate;
-};
-
-const readTodoList = function(todoList) {
-  let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
-  for (const [key, value] of Object.entries(todoList)) {
-    if (key !== 'todoItems') {
-      todoTemplate = todoTemplate.replace(`__${key}__`, value);
-    } else {
-      const allTasks = collectTasks(value);
-      todoTemplate = todoTemplate.replace(`__${key}__`, allTasks);
-    }
-  }
-  return todoTemplate;
-};
-
-const loadOlderTodoList = function(todoFile) {
-  list = loadFile(todoFile, 'utf8');
-  return JSON.parse(list);
-};
-
-const serveTodoPage = function(req, res, next) {
+const serveTodoPage = function(req, res) {
   const completeUrl = getCompleteUrl(req.url);
   let todoPage = loadFile(completeUrl, 'utf8');
-  const allTodo = loadOlderTodoList(TODO_FILE);
-  const todoTemplate = allTodo.map(readTodoList);
-  todoPage = todoPage.replace('__todo__', todoTemplate.join('\n'));
-  generateGetResponse(completeUrl, res, todoPage);
+  const allTodo = loadOlderTodoLogs(TODO_FILE);
+  todoPage = loadTodoTemplate(allTodo, todoPage, loadFile);
+  todoPage = generateGetResponse(completeUrl, res, todoPage);
 };
 
 const notFound = function(req, res) {
