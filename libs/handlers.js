@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { App } = require('./app.js');
-const { loadTodoTemplate } = require('./viewTodoTemplate');
+const { loadTodoPage } = require('./viewTodoTemplate');
 const { Todo } = require('./todo');
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
@@ -57,7 +57,7 @@ const saveTodo = function(req, res, next) {
   const newEntry = Todo.parseNewEntry(req.body);
   newTodo = new Todo(newEntry, todoLogs);
   newTodo.appendTo(TODO_FILE, writeTo);
-  let template = loadTodoPage();
+  let template = readTodoPage();
   res.end(template);
 };
 
@@ -77,15 +77,15 @@ const loadStaticResponse = function(req, res, next) {
   generateGetResponse(completeUrl, res, body);
 };
 
-const loadTodoPage = function() {
+const readTodoPage = function() {
   const allTodo = loadOlderTodoLogs(TODO_FILE);
-  return loadTodoTemplate(allTodo, loadFile);
+  return loadTodoPage(allTodo, loadFile);
 };
 
 const serveTodoPage = function(req, res) {
   const completeUrl = getCompleteUrl(req.url);
   let mainPage = loadFile(completeUrl, 'utf8');
-  const todoPage = loadTodoPage(completeUrl);
+  const todoPage = readTodoPage();
   mainPage = mainPage.replace('__todoPage__', todoPage);
   generateGetResponse(completeUrl, res, mainPage);
 };
@@ -117,14 +117,14 @@ const setStatus = function(list, taskId) {
 const handleTaskStatus = function(req, res) {
   let reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const todoTemplate = loadTodoTemplate(todoLogs, loadFile);
   for (todo of todoLogs) {
     if (todo.bucketId === reqBody.bucketId) {
       setStatus(todo.todoItems, reqBody.taskId);
     }
   }
   writeTo(TODO_FILE, todoLogs);
-  res.end(todoTemplate.join('\n'));
+  const todoPage = readTodoPage();
+  res.end(todoPage);
 };
 
 const app = new App();

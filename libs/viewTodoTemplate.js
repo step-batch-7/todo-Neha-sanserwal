@@ -31,10 +31,10 @@ const readTodoList = function(todoList) {
   return todoTemplate;
 };
 
-const loadTodoTemplate = function(allTodo, loadFile) {
+const loadTodoPage = function(allTodo, loadFile) {
   const todoPage = loadFile('templates/todoPage.html', 'utf8');
   const todoTemplate = allTodo.map(readTodoList.bind({ loadFile }));
   return todoPage.replace('__todo__', todoTemplate.join('\n'));
 };
 
-module.exports = { loadTodoTemplate };
+module.exports = { loadTodoPage };

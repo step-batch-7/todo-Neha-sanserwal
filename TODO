@@ -27,4 +27,5 @@
 --DONE-- * move to XML http request instead of reloading.
               - clean input field after submit.
 
-* rearrange code and extract classes and templates like todo template from index.
+--DONE-- * rearrange code and extract classes and templates like todo template from index.
+          - extract class todoLogs and todo.

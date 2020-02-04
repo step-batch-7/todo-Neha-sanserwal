@@ -1,11 +1,9 @@
 const sendStatusRequest = function(event) {
   req = new XMLHttpRequest();
   req.open('POST', '/setStatus');
-  if (req.status == 200) {
-    document.getElementsByClassName(
-      'todo-list'
-    )[0].innerHTML = this.responseText;
-  }
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
   const bucketId = event.target.className;
   const taskId = event.target.id;
   req.send(JSON.stringify({ bucketId, taskId }));
@@ -14,9 +12,7 @@ const sendStatusRequest = function(event) {
 const sendSaveRequest = function() {
   const req = new XMLHttpRequest();
   req.onload = function() {
-    document.getElementsByClassName(
-      'todoPage'
-    )[0].innerHTML = this.responseText;
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
   req.open('POST', '/saveTodo');
   const title = document.getElementById('title').value;
