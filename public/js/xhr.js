@@ -12,7 +12,6 @@ const sendStatusRequest = function(event) {
 const sendSaveRequest = function() {
   const req = new XMLHttpRequest();
   req.onload = function() {
-    console.log(this.responseText);
     changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
   req.open('POST', '/saveTodo');
@@ -29,4 +28,16 @@ const sendDeleteBucketRequest = function(event) {
   req.open('POST', '/deleteBucket');
   const bucketId = event.target.id;
   req.send(JSON.stringify({ bucketId }));
+};
+
+const sendDeleteTaskRequest = function(event) {
+  const classes = event.target.className;
+  const req = new XMLHttpRequest();
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('POST', '/deleteTask');
+  const [bucketId] = classes.split(' ');
+  const taskId = event.target.id;
+  req.send(JSON.stringify({ bucketId, taskId }));
 };

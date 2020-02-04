@@ -115,6 +115,16 @@ const deleteBucket = function(req, res) {
   res.end(readTodoPage());
 };
 
+const deleteTask = function(req, res) {
+  let reqBody = JSON.parse(req.body);
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const bucket = todoLogs[reqBody.bucketId];
+  const tasks = bucket.tasks;
+  delete tasks[reqBody.taskId];
+  writeTo(TODO_FILE, todoLogs);
+  res.end(readTodoPage());
+};
+
 const notFound = function(req, res) {
   res.writeHead('404', 'NOT FOUND');
   res.end();
@@ -130,6 +140,7 @@ app.use(readBody);
 app.post('/saveTodo', saveTodo);
 app.post('/setStatus', handleTaskStatus);
 app.post('/deleteBucket', deleteBucket);
+app.post('/deleteTask', deleteTask);
 app.get('/', serveTodoPage);
 app.get('', loadStaticResponse);
 app.get('', notFound);
