@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { parse } = require('url');
 const { App } = require('./app.js');
 const { loadTodoTemplate } = require('./viewTodoTemplate');
 const { Todo } = require('./todo');
@@ -58,7 +57,7 @@ const saveTodo = function(req, res, next) {
   const newEntry = Todo.parseNewEntry(req.body);
   newTodo = new Todo(newEntry, todoLogs);
   newTodo.appendTo(TODO_FILE, writeTo);
-  let template = loadTodoPage(`${STATIC_DIR}/index.html`);
+  let template = loadTodoPage();
   res.end(template);
 };
 
@@ -77,17 +76,18 @@ const loadStaticResponse = function(req, res, next) {
   const body = loadFile(completeUrl);
   generateGetResponse(completeUrl, res, body);
 };
-const loadTodoPage = function(completeUrl) {
-  let todoPage = loadFile(completeUrl, 'utf8');
+
+const loadTodoPage = function() {
   const allTodo = loadOlderTodoLogs(TODO_FILE);
-  const todoTemplate = loadTodoTemplate(allTodo, loadFile);
-  todoPage = todoPage.replace('__todo__', todoTemplate.join('\n'));
-  return todoPage;
+  return loadTodoTemplate(allTodo, loadFile);
 };
+
 const serveTodoPage = function(req, res) {
   const completeUrl = getCompleteUrl(req.url);
+  let mainPage = loadFile(completeUrl, 'utf8');
   const todoPage = loadTodoPage(completeUrl);
-  generateGetResponse(completeUrl, res, todoPage);
+  mainPage = mainPage.replace('__todoPage__', todoPage);
+  generateGetResponse(completeUrl, res, mainPage);
 };
 
 const notFound = function(req, res) {

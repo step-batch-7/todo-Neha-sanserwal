@@ -19,12 +19,12 @@
 --DONE-- * change the structure of storing the todo.
 --DONE-- * changing reading of todo.
 --DONE-- * on submit write to the json file and redirect to same page.
---DONE-- * extract file viewTodoTemplate for coverting data to html.
+--DONE-- * extract file viewTodoTemplate for converting data to html.
 --DONE-- * extract class Todo.
 --DONE-- * set done and undone on the click of function
 --DONE-- * refactor function read task and save function.
 
---DONE-- * move to xmlhttprequest instead of reloading.
+--DONE-- * move to XML http request instead of reloading.
               - clean input field after submit.
 
 * rearrange code and extract classes and templates like todo template from index.
