@@ -92,3 +92,7 @@
   flex-wrap: wrap;
   padding: 5px;
 }
+
+#newTask {
+  display: none;
+}

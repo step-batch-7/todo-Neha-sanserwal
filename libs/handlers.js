@@ -46,7 +46,7 @@ const getCompleteUrl = function(url) {
 
 const loadOlderTodoLogs = function(todoFile) {
   if (!fs.existsSync(todoFile)) {
-    writeTo(todoFile, []);
+    writeTo(todoFile, {});
   }
   const todo = loadFile(todoFile);
   return JSON.parse(todo);
@@ -106,6 +106,15 @@ const handleTaskStatus = function(req, res) {
   res.end(readTodoPage());
 };
 
+const deleteBucket = function(req, res) {
+  let reqBody = JSON.parse(req.body);
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const bucketId = reqBody.bucketId;
+  delete todoLogs[bucketId];
+  writeTo(TODO_FILE, todoLogs);
+  res.end(readTodoPage());
+};
+
 const notFound = function(req, res) {
   res.writeHead('404', 'NOT FOUND');
   res.end();
@@ -120,6 +129,7 @@ const app = new App();
 app.use(readBody);
 app.post('/saveTodo', saveTodo);
 app.post('/setStatus', handleTaskStatus);
+app.post('/deleteBucket', deleteBucket);
 app.get('/', serveTodoPage);
 app.get('', loadStaticResponse);
 app.get('', notFound);

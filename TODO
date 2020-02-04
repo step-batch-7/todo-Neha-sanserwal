@@ -30,5 +30,7 @@
 --DONE-- * rearrange code and extract classes and templates like todo template from index.
 --DONE-- * change the dataStructure.
 --DONE-- * modify the loading and saving of tasks.
-* change handleStatus function.
+--DONE-- * change handleStatus function.
+--DONE-- * add ability to delete bucket.
+* add ability to delete task.
 *extract class todoLogs and todo.

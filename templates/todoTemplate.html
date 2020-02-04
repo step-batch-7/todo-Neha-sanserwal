@@ -1,8 +1,15 @@
 <div class="todos">
   <div class="head" id="__bucketId__">
-    __title__ <button onclick="">+</button>
+    __title__
+    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    <i
+      id="__bucketId__"
+      onclick="sendDeleteBucketRequest(event)"
+      class="fa fa-trash"
+      aria-hidden="true"
+    ></i>
   </div>
-  <div class="listItems">
+  <div class="listItems" class="item">
     __tasks__
   </div>
 </div>
