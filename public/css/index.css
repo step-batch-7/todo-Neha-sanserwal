@@ -92,7 +92,6 @@
   flex-wrap: wrap;
   padding: 5px;
 }
-
-#newTask {
+.newTask {
   display: none;
 }

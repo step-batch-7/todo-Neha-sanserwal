@@ -90,7 +90,7 @@ const serveTodoPage = function(req, res) {
   generateGetResponse(completeUrl, res, mainPage);
 };
 
-const reverseStatus = function(status) {
+const toggleStatus = function(status) {
   if (status === 'checked') {
     return '';
   }
@@ -101,7 +101,7 @@ const handleTaskStatus = function(req, res) {
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucket = todoLogs[reqBody.bucketId];
   const task = bucket.tasks[reqBody.taskId];
-  task.status = reverseStatus(task.status);
+  task.status = toggleStatus(task.status);
   writeTo(TODO_FILE, todoLogs);
   res.end(readTodoPage());
 };

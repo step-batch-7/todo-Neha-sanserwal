@@ -1,7 +1,12 @@
 <div class="todos">
   <div class="head" id="__bucketId__">
     __title__
-    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    <i
+      id="__bucketId__"
+      onclick="showNewTaskForm(event)"
+      class="fa fa-plus-circle"
+      aria-hidden="true"
+    ></i>
     <i
       id="__bucketId__"
       onclick="sendDeleteBucketRequest(event)"
@@ -11,5 +16,15 @@
   </div>
   <div class="listItems" class="item">
     __tasks__
+  </div>
+  <div id="newTask__bucketId__" class="newTask">
+    <input id="newTask__bucketId__" name="newTask" type="text" />
+    <i
+      id="__bucketId__"
+      onclick="sendSaveNewTaskRequest(event)"
+      class="fa fa-check"
+      aria-hidden="true"
+    ></i>
+    <i class="fa fa-times" aria-hidden="true"></i>
   </div>
 </div>
