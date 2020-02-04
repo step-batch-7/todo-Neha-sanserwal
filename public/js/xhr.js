@@ -30,6 +30,18 @@ const sendDeleteBucketRequest = function(event) {
   req.send(JSON.stringify({ bucketId }));
 };
 
+const sendSaveNewTaskRequest = function(event) {
+  const req = new XMLHttpRequest();
+  const bucketId = event.target.id;
+  const inputBox = `#newTask${bucketId}[name="newTask"]`;
+  const task = document.querySelector(inputBox).value;
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('POST', '/saveNewTask');
+  req.send(JSON.stringify({ bucketId, task }));
+};
+
 const sendDeleteTaskRequest = function(event) {
   const classes = event.target.className;
   const req = new XMLHttpRequest();

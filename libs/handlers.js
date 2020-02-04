@@ -115,6 +115,18 @@ const deleteBucket = function(req, res) {
   res.end(readTodoPage());
 };
 
+const saveNewTask = function(req, res) {
+  let reqBody = JSON.parse(req.body);
+  let todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const bucket = todoLogs[reqBody.bucketId].tasks;
+  const newEntry = Todo.parseEntryItem(reqBody);
+  const [task] = Object.values(newEntry);
+  const taskId = task.taskId;
+  bucket[taskId] = task;
+  writeTo(TODO_FILE, todoLogs);
+  res.end(readTodoPage());
+};
+
 const deleteTask = function(req, res) {
   let reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
@@ -141,6 +153,7 @@ app.post('/saveTodo', saveTodo);
 app.post('/setStatus', handleTaskStatus);
 app.post('/deleteBucket', deleteBucket);
 app.post('/deleteTask', deleteTask);
+app.post('/saveNewTask', saveNewTask);
 app.get('/', serveTodoPage);
 app.get('', loadStaticResponse);
 app.get('', notFound);

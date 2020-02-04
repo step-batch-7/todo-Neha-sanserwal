@@ -33,4 +33,6 @@
 --DONE-- * change handleStatus function.
 --DONE-- * add ability to delete bucket.
 --DONE-- * add ability to delete task.
+--DONE-- * add form of adding new task.
+--DONE-- * add functionality of adding new task in same bucket.
 *extract class todoLogs and todo.
