@@ -28,4 +28,6 @@
               - clean input field after submit.
 
 --DONE-- * rearrange code and extract classes and templates like todo template from index.
-          - extract class todoLogs and todo.
+--DONE-- * change the dataStructure.
+--DONE-- * modify the loading and saving of tasks.
+*extract class todoLogs and todo.

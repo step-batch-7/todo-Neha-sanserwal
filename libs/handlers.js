@@ -117,6 +117,7 @@ const setStatus = function(list, taskId) {
 const handleTaskStatus = function(req, res) {
   let reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
+
   for (todo of todoLogs) {
     if (todo.bucketId === reqBody.bucketId) {
       setStatus(todo.todoItems, reqBody.taskId);

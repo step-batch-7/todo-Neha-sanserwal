@@ -5,23 +5,28 @@ const getRandomId = function() {
 class Todo {
   constructor(newEntry, logs) {
     this.newEntry = { ...newEntry };
-    this.logs = [...logs];
+    this.logs = logs;
   }
+
   static parseEntryItem(newEntry) {
     const status = '';
     const taskId = getRandomId();
     const bucketId = newEntry.bucketId;
     const text = newEntry.task;
-    return { status, taskId, bucketId, text };
+    const task = { status, taskId, bucketId, text };
+    return { [taskId]: task };
   }
+
   static parseNewEntry(text) {
     const newEntry = JSON.parse(text);
     newEntry.bucketId = getRandomId();
-    newEntry.todoItems = [this.parseEntryItem(newEntry)];
+    newEntry.tasks = { ...this.parseEntryItem(newEntry) };
     return newEntry;
   }
+
   appendTo(file, writer) {
-    this.logs.unshift(this.newEntry);
+    const bucketId = this.newEntry.bucketId;
+    this.logs[bucketId] = this.newEntry;
     writer(file, this.logs);
   }
 }

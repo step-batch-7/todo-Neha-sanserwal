@@ -10,21 +10,22 @@ const readTask = function(task, loadFile) {
   }
   return taskTemplate;
 };
-const collectTaskList = function(todoList, loadFile) {
+
+const collectTaskList = function(tasks, loadFile) {
   let listTemplate = '';
-  for (task of todoList) {
-    listTemplate += readTask(task, loadFile);
+  for (const [, value] of Object.entries(tasks)) {
+    listTemplate += readTask(value, loadFile);
   }
   return listTemplate;
 };
 
-const readTodoList = function(todoList) {
-  let todoTemplate = this.loadFile('templates/todoTemplate.html', 'utf8');
-  for (const [key, value] of Object.entries(todoList)) {
-    if (key !== 'todoItems') {
+const readTodoList = function(bucket, loadFile) {
+  let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
+  for (const [key, value] of Object.entries(bucket)) {
+    if (key !== 'tasks') {
       todoTemplate = replaceText(key, value, todoTemplate);
     } else {
-      const allTasks = collectTaskList(value, this.loadFile);
+      const allTasks = collectTaskList(value, loadFile);
       todoTemplate = replaceText(key, allTasks, todoTemplate);
     }
   }
@@ -33,8 +34,11 @@ const readTodoList = function(todoList) {
 
 const loadTodoPage = function(allTodo, loadFile) {
   const todoPage = loadFile('templates/todoPage.html', 'utf8');
-  const todoTemplate = allTodo.map(readTodoList.bind({ loadFile }));
-  return todoPage.replace('__todo__', todoTemplate.join('\n'));
+  let todoCards = '';
+  for ([key, value] of Object.entries(allTodo)) {
+    todoCards += readTodoList(value, loadFile);
+  }
+  return todoPage.replace('__todo__', todoCards);
 };
 
 module.exports = { loadTodoPage };
