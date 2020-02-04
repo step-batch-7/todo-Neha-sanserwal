@@ -22,6 +22,9 @@
 --DONE-- * extract file viewTodoTemplate for coverting data to html.
 --DONE-- * extract class Todo.
 --DONE-- * set done and undone on the click of function
-* refactor function read task and save function.
+--DONE-- * refactor function read task and save function.
 
-* move to xmlhttprequest instead of reloading.
+--DONE-- * move to xmlhttprequest instead of reloading.
+              - clean input field after submit.
+
+* rearrange code and extract classes and templates like todo template from index.

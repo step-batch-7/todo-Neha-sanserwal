@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +10,33 @@
     <link href="/css/index.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <title>todo app</title>
-    <script></script>
+    <script>
+      const sendStatusRequest = function(event) {
+        req = new XMLHttpRequest();
+        req.open('POST', '/setStatus');
+        if (req.status == 200) {
+          document.getElementsByClassName(
+            'todo-list'
+          )[0].innerHTML = this.responseText;
+        }
+        const bucketId = event.target.className;
+        const taskId = event.target.id;
+        req.send(JSON.stringify({ bucketId, taskId }));
+      };
+
+      const sendSaveRequest = function() {
+        const req = new XMLHttpRequest();
+        req.onload = function() {
+          document.getElementsByClassName(
+            'todoPage'
+          )[0].innerHTML = this.responseText;
+        };
+        req.open('POST', '/saveTodo');
+        const title = document.getElementById('title').value;
+        const task = document.getElementById('task').value;
+        req.send(JSON.stringify({ title, task }));
+      };
+    </script>
   </head>
   <body>
     <div class="todoPage">
@@ -19,28 +44,26 @@
         <h1>POST IT</h1>
       </div>
 
-      <form class="todo-form" action="/" method="POST">
-        <h2>Add your todo here ...</h2>
-        <label for="title">Title</label>
-        <input
-          id="title"
-          class="input-box"
-          name="title"
-          type="text"
-          placeholder="buy milk"
-        />
-        <label for="title">Task</label>
-        <input
-          id="task"
-          class="input-box"
-          name="task"
-          type="text"
-          placeholder="buy milk"
-        />
-        <button class="submit-btn" type="submit">
-          Submit
-        </button>
-      </form>
+      <h2>Add your todo here ...</h2>
+      <label for="title">Title</label>
+      <input
+        id="title"
+        class="input-box"
+        name="title"
+        type="text"
+        placeholder="buy milk"
+      />
+      <label for="title">Task</label>
+      <input
+        id="task"
+        class="input-box"
+        name="task"
+        type="text"
+        placeholder="buy milk"
+      />
+      <button class="submit-btn" onclick="sendSaveRequest()" type="submit">
+        Submit
+      </button>
       <div class="todo-list">
         __todo__
       </div>

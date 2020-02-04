@@ -31,9 +31,9 @@ const readTodoList = function(todoList) {
   return todoTemplate;
 };
 
-const loadTodoTemplate = function(allTodo, todoPage, loadFile) {
+const loadTodoTemplate = function(allTodo, loadFile) {
   const todoTemplate = allTodo.map(readTodoList.bind({ loadFile }));
-  return todoPage.replace('__todo__', todoTemplate.join('\n'));
+  return todoTemplate;
 };
 
 module.exports = { loadTodoTemplate };

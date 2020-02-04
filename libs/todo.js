@@ -1,6 +1,6 @@
 const getRandomId = function() {
   const randomId = Math.random() * Math.pow(10, 10);
-  return Math.floor(randomId);
+  return `${Math.floor(randomId)}`;
 };
 class Todo {
   constructor(newEntry, logs) {
@@ -14,8 +14,8 @@ class Todo {
     const text = newEntry.task;
     return { status, taskId, bucketId, text };
   }
-  static parseNewEntry(parser, text) {
-    const newEntry = { ...parser(`?${text}`, true).query };
+  static parseNewEntry(text) {
+    const newEntry = JSON.parse(text);
     newEntry.bucketId = getRandomId();
     newEntry.todoItems = [this.parseEntryItem(newEntry)];
     return newEntry;
