@@ -95,7 +95,6 @@ const notFound = function(req, res) {
   res.end();
 };
 const methodNotAllowed = function(req, res) {
-  console.log('in meethod not allowed');
   res.writeHead('400', 'Method Not Allowed');
   res.end();
 };
