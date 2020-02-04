@@ -90,6 +90,22 @@ const serveTodoPage = function(req, res) {
   generateGetResponse(completeUrl, res, mainPage);
 };
 
+const reverseStatus = function(status) {
+  if (status === 'checked') {
+    return '';
+  }
+  return 'checked';
+};
+const handleTaskStatus = function(req, res) {
+  let reqBody = JSON.parse(req.body);
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const bucket = todoLogs[reqBody.bucketId];
+  const task = bucket.tasks[reqBody.taskId];
+  task.status = reverseStatus(task.status);
+  writeTo(TODO_FILE, todoLogs);
+  res.end(readTodoPage());
+};
+
 const notFound = function(req, res) {
   res.writeHead('404', 'NOT FOUND');
   res.end();
@@ -97,35 +113,6 @@ const notFound = function(req, res) {
 const methodNotAllowed = function(req, res) {
   res.writeHead('400', 'Method Not Allowed');
   res.end();
-};
-
-const reverseStatus = function(status) {
-  if (status === 'checked') {
-    return '';
-  }
-  return 'checked';
-};
-
-const setStatus = function(list, taskId) {
-  for (task of list) {
-    if (task.taskId === taskId) {
-      task.status = reverseStatus(task.status);
-      return;
-    }
-  }
-};
-const handleTaskStatus = function(req, res) {
-  let reqBody = JSON.parse(req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-
-  for (todo of todoLogs) {
-    if (todo.bucketId === reqBody.bucketId) {
-      setStatus(todo.todoItems, reqBody.taskId);
-    }
-  }
-  writeTo(TODO_FILE, todoLogs);
-  const todoPage = readTodoPage();
-  res.end(todoPage);
 };
 
 const app = new App();

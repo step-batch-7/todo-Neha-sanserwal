@@ -30,4 +30,5 @@
 --DONE-- * rearrange code and extract classes and templates like todo template from index.
 --DONE-- * change the dataStructure.
 --DONE-- * modify the loading and saving of tasks.
+* change handleStatus function.
 *extract class todoLogs and todo.
