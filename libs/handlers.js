@@ -106,20 +106,12 @@ const deleteBucket = function(req, res) {
 
 //____________________________task handlers_________________________
 
-const toggleStatus = function(status) {
-  if (status === 'checked') {
-    return '';
-  }
-  return 'checked';
-};
 const handleTaskStatus = function(req, res) {
   const reqBody = JSON.parse(req.body);
   const logs = loadOlderTodoLogs(TODO_FILE);
   const todoLogs = new TodoLogs(logs);
-  const bucket = todoLogs[reqBody.bucketId];
-  const task = bucket.tasks[reqBody.taskId];
-  task.status = toggleStatus(task.status);
-  writeTo(TODO_FILE, todoLogs);
+  todoLogs.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
+  todoLogs.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 

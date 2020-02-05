@@ -15,5 +15,11 @@ class Task {
     const taskId = getRandomId();
     return new Task(status, bucketId, taskId, text);
   }
+  toggleStatus() {
+    if (this.status === 'checked') {
+      this.status = '';
+    }
+    this.status = 'checked';
+  }
 }
 module.exports = { Task };

@@ -26,6 +26,12 @@ class Bucket {
     const tasks = this.tasks;
     delete tasks[taskId];
   }
+  changeStatus(itemId) {
+    const { status, bucketId, taskId, text } = this.tasks[itemId];
+    const task = new Task(status, bucketId, taskId, text);
+    task.toggleStatus();
+    this.tasks[itemId] = task;
+  }
 }
 class TodoLogs {
   constructor(logs) {
@@ -56,6 +62,12 @@ class TodoLogs {
     const { title, bucketId, tasks } = this.logs[parentId];
     const bucket = new Bucket(title, bucketId, tasks);
     bucket.delete(taskId);
+  }
+  changeTaskStatus(parentId, taskId) {
+    const { title, bucketId, tasks } = this.logs[parentId];
+    const bucket = new Bucket(title, bucketId, tasks);
+    bucket.changeStatus(taskId);
+    this.logs[parentId] = bucket;
   }
 }
 
