@@ -4,14 +4,16 @@ const getRandomId = function() {
   return Math.floor(randomId);
 };
 class Task {
-  constructor(newTask) {
-    this.item = { ...newTask };
+  constructor(status, bucketId, taskId, text) {
+    this.status = status;
+    this.bucketId = bucketId;
+    this.taskId = taskId;
+    this.text = text;
   }
-  static parseEntryItem(bucketId, text) {
+  static parse(bucketId, text) {
     const status = '';
     const taskId = getRandomId();
-    const task = { status, taskId, bucketId, text };
-    return { [taskId]: task };
+    return new Task(status, bucketId, taskId, text);
   }
   get details() {
     const [taskData] = Object.values(this.item);
