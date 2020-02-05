@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { App } = require('./app.js');
 const { loadTodoPage } = require('./viewTodoTemplate');
-const { Todo } = require('./todo');
+const { TodoLogs } = require('./todo');
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
 
@@ -86,9 +86,9 @@ const serveTodoPage = function(req, res) {
 
 const saveTodo = function(req, res) {
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const newEntry = Todo.parseNewEntry(req.body);
-  const newTodo = new Todo(newEntry, todoLogs);
-  newTodo.appendTo(TODO_FILE, writeTo);
+  const newTodo = new TodoLogs(todoLogs);
+  const newEntry = TodoLogs.parseNewEntry(req.body);
+  newTodo.appendAndWrite(TODO_FILE, writeTo, newEntry);
   const template = readTodoPage();
   res.end(template);
 };
@@ -124,7 +124,7 @@ const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucket = todoLogs[reqBody.bucketId].tasks;
-  const newEntry = Todo.parseEntryItem(reqBody);
+  const newEntry = TodoLogs.parseEntryItem(reqBody);
   const [task] = Object.values(newEntry);
   const taskId = task.taskId;
   bucket[taskId] = task;

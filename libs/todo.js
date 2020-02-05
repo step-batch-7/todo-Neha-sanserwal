@@ -3,9 +3,8 @@ const getRandomId = function() {
   const randomId = Math.random() * Math.pow(range, range);
   return Math.floor(randomId);
 };
-class Todo {
-  constructor(newEntry, logs) {
-    this.newEntry = { ...newEntry };
+class TodoLogs {
+  constructor(logs) {
     this.logs = logs;
   }
 
@@ -25,13 +24,13 @@ class Todo {
     return newEntry;
   }
 
-  appendTo(file, writer) {
-    const bucketId = this.newEntry.bucketId;
-    this.logs[bucketId] = this.newEntry;
+  appendAndWrite(file, writer, newEntry) {
+    const bucketId = newEntry.bucketId;
+    this.logs[bucketId] = newEntry;
     writer(file, this.logs);
   }
 }
 
 module.exports = {
-  Todo
+  TodoLogs
 };
