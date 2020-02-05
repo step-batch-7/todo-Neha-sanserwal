@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { App } = require('./app.js');
 const { loadTodoPage } = require('./viewTodoTemplate');
-const { TodoLogs } = require('./todo');
+const { TodoLogs, Bucket } = require('./todo');
 const { Task } = require('./task');
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
@@ -88,8 +88,8 @@ const serveTodoPage = function(req, res) {
 const saveBucket = function(req, res) {
   const logs = loadOlderTodoLogs(TODO_FILE);
   const todoLogs = new TodoLogs(logs);
-  const newEntry = TodoLogs.parseNewEntry(req.body);
-  todoLogs.append(newEntry);
+  const bucket = Bucket.parse(req.body);
+  todoLogs.append(bucket);
   todoLogs.write(TODO_FILE, writeTo);
   const template = readTodoPage();
   res.end(template);
@@ -114,7 +114,8 @@ const toggleStatus = function(status) {
 };
 const handleTaskStatus = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const logs = loadOlderTodoLogs(TODO_FILE);
+  const todoLogs = new TodoLogs(logs);
   const bucket = todoLogs[reqBody.bucketId];
   const task = bucket.tasks[reqBody.taskId];
   task.status = toggleStatus(task.status);
@@ -135,11 +136,10 @@ const saveNewTask = function(req, res) {
 
 const deleteTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const bucket = todoLogs[reqBody.bucketId];
-  const tasks = bucket.tasks;
-  delete tasks[reqBody.taskId];
-  writeTo(TODO_FILE, todoLogs);
+  const logs = loadOlderTodoLogs(TODO_FILE);
+  const todoLogs = new TodoLogs(logs);
+  todoLogs.deleteTask(reqBody.bucketId, reqBody.taskId);
+  todoLogs.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
