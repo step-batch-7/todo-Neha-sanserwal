@@ -2,6 +2,7 @@ const fs = require('fs');
 const { App } = require('./app.js');
 const { loadTodoPage } = require('./viewTodoTemplate');
 const { TodoLogs } = require('./todo');
+const { Task } = require('./task');
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
 
@@ -123,13 +124,12 @@ const handleTaskStatus = function(req, res) {
 
 const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const bucket = todoLogs[reqBody.bucketId].tasks;
-  const newEntry = TodoLogs.parseEntryItem(reqBody);
-  const [task] = Object.values(newEntry);
-  const taskId = task.taskId;
-  bucket[taskId] = task;
-  writeTo(TODO_FILE, todoLogs);
+  const logs = loadOlderTodoLogs(TODO_FILE);
+  const todoLogs = new TodoLogs(logs);
+  const data = Task.parseEntryItem(reqBody.bucketId, reqBody.task);
+  const task = new Task(data);
+  todoLogs.appendTask(reqBody.bucketId, task);
+  todoLogs.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 

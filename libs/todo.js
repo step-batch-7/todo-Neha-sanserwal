@@ -1,3 +1,4 @@
+const { Task } = require('./task');
 const getRandomId = function() {
   const range = 10;
   const randomId = Math.random() * Math.pow(range, range);
@@ -8,24 +9,22 @@ class TodoLogs {
     this.logs = logs;
   }
 
-  static parseEntryItem(newEntry) {
-    const status = '';
-    const taskId = getRandomId();
-    const bucketId = newEntry.bucketId;
-    const text = newEntry.task;
-    const task = { status, taskId, bucketId, text };
-    return { [taskId]: task };
-  }
-
   static parseNewEntry(text) {
-    const newEntry = JSON.parse(text);
-    newEntry.bucketId = getRandomId();
-    newEntry.tasks = { ...this.parseEntryItem(newEntry) };
-    return newEntry;
+    const data = JSON.parse(text);
+    const title = data.title;
+    const bucketId = getRandomId();
+    const tasks = { ...Task.parseEntryItem(bucketId, data.task) };
+    return { title, bucketId, tasks };
   }
 
   write(fileName, writer) {
     writer(fileName, this.logs);
+  }
+
+  appendTask(bucketId, task) {
+    const tasks = this.logs[bucketId].tasks;
+    const taskId = task.details.taskId;
+    tasks[taskId] = task.details;
   }
 
   append(newEntry) {
