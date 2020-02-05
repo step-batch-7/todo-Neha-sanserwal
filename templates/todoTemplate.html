@@ -18,13 +18,17 @@
     __tasks__
   </div>
   <div id="newTask__bucketId__" class="newTask">
-    <input id="newTask__bucketId__" name="newTask" type="text" />
-    <i
-      id="__bucketId__"
-      onclick="sendSaveNewTaskRequest(event)"
-      class="fa fa-check"
-      aria-hidden="true"
-    ></i>
-    <i class="fa fa-times" aria-hidden="true"></i>
+    <div class="input">
+      <input id="newTask__bucketId__" name="newTask" type="text" />
+    </div>
+    <div class="operations">
+      <i
+        id="__bucketId__"
+        onclick="sendSaveNewTaskRequest(event)"
+        class="fa fa-check"
+        aria-hidden="true"
+      ></i>
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </div>
   </div>
 </div>

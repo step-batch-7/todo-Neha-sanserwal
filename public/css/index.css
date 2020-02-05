@@ -65,6 +65,7 @@
   width: 350px;
   flex-flow: column;
   flex-wrap: wrap;
+  height: auto;
   margin-bottom: 24px;
   border: 1px solid #09d3ac;
   border-radius: 5px;
@@ -88,9 +89,7 @@
 }
 .listItems {
   display: flex;
-  flex-flow: column;
   width: 100%;
-  min-height: 100px;
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -111,4 +110,44 @@
 }
 .newTask {
   display: none;
+  flex-flow: row;
+  width: 96%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding: 5px;
+}
+.newTask > .input > input {
+  width: 100%;
+  height: 31px;
+  border-radius: 5px;
+  border: none;
+  border: 2px solid lightgray;
+}
+
+.newTask > .input {
+  width: 70%;
+}
+
+.newTask > .operations {
+  display: flex;
+  flex-flow: row;
+  width: 15%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.newtask > .operations > .fa-check {
+  font-size: 1.5rem;
+}
+.newtask > .operations > .fa-check:hover {
+  font-size: 1.7rem;
+  color: #09d3ac;
+}
+.newtask > .operations > .fa-times {
+  font-size: 1.5rem;
+}
+.newtask > .operations > .fa-times:hover {
+  font-size: 1.7rem;
+  color: rgb(154, 25, 25);
 }
