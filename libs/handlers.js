@@ -84,21 +84,22 @@ const serveTodoPage = function(req, res) {
 
 //____________________________bucket handlers_________________________
 
-const saveTodo = function(req, res) {
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const newTodo = new TodoLogs(todoLogs);
+const saveBucket = function(req, res) {
+  const logs = loadOlderTodoLogs(TODO_FILE);
+  const todoLogs = new TodoLogs(logs);
   const newEntry = TodoLogs.parseNewEntry(req.body);
-  newTodo.appendAndWrite(TODO_FILE, writeTo, newEntry);
+  todoLogs.append(newEntry);
+  todoLogs.write(TODO_FILE, writeTo);
   const template = readTodoPage();
   res.end(template);
 };
 
 const deleteBucket = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const todoLogs = loadOlderTodoLogs(TODO_FILE);
-  const bucketId = reqBody.bucketId;
-  delete todoLogs[bucketId];
-  writeTo(TODO_FILE, todoLogs);
+  const logs = loadOlderTodoLogs(TODO_FILE);
+  const todoLogs = new TodoLogs(logs);
+  todoLogs.deleteBucket(reqBody.bucketId);
+  todoLogs.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
@@ -154,7 +155,7 @@ const methodNotAllowed = function(req, res) {
 const app = new App();
 
 app.use(readBody);
-app.post('/saveTodo', saveTodo);
+app.post('/saveTodo', saveBucket);
 app.post('/setStatus', handleTaskStatus);
 app.post('/deleteBucket', deleteBucket);
 app.post('/deleteTask', deleteTask);

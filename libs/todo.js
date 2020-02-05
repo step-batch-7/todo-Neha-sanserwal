@@ -24,10 +24,17 @@ class TodoLogs {
     return newEntry;
   }
 
-  appendAndWrite(file, writer, newEntry) {
+  write(fileName, writer) {
+    writer(fileName, this.logs);
+  }
+
+  append(newEntry) {
     const bucketId = newEntry.bucketId;
     this.logs[bucketId] = newEntry;
-    writer(file, this.logs);
+  }
+
+  deleteBucket(bucketId) {
+    delete this.logs[bucketId];
   }
 }
 
