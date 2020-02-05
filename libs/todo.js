@@ -1,5 +1,6 @@
 const getRandomId = function() {
-  const randomId = Math.random() * Math.pow(10, 10);
+  const range = 10;
+  const randomId = Math.random() * Math.pow(range, range);
   return Math.floor(randomId);
 };
 class Todo {
