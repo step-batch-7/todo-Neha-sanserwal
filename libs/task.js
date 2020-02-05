@@ -15,9 +15,5 @@ class Task {
     const taskId = getRandomId();
     return new Task(status, bucketId, taskId, text);
   }
-  get details() {
-    const [taskData] = Object.values(this.item);
-    return taskData;
-  }
 }
 module.exports = { Task };

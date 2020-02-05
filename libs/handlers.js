@@ -127,7 +127,7 @@ const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
   const logs = loadOlderTodoLogs(TODO_FILE);
   const todoLogs = new TodoLogs(logs);
-  const task = Task.parseEntryItem(reqBody.bucketId, reqBody.task);
+  const task = Task.parse(reqBody.bucketId, reqBody.task);
   todoLogs.appendTask(reqBody.bucketId, task);
   todoLogs.write(TODO_FILE, writeTo);
   res.end(readTodoPage());

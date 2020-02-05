@@ -19,6 +19,13 @@ class Bucket {
     const tasks = { [newTask.taskId]: newTask };
     return new Bucket(title, bucketId, tasks);
   }
+  add(task) {
+    this.tasks[task.taskId] = task;
+  }
+  delete(taskId) {
+    const tasks = this.tasks;
+    delete tasks[taskId];
+  }
 }
 class TodoLogs {
   constructor(logs) {
@@ -38,16 +45,17 @@ class TodoLogs {
     delete this.logs[bucketId];
   }
 
-  appendTask(bucketId, task) {
-    const tasks = this.logs[bucketId].tasks;
-    const taskId = task.details.taskId;
-    tasks[taskId] = task.details;
+  appendTask(parentId, task) {
+    const { title, bucketId, tasks } = this.logs[parentId];
+    const bucket = new Bucket(title, bucketId, tasks);
+    bucket.add(task);
+    this.logs[parentId] = bucket;
   }
 
-  deleteTask(bucketId, taskId) {
-    const bucket = this.logs[bucketId];
-    const tasks = bucket.tasks;
-    delete tasks[taskId];
+  deleteTask(parentId, taskId) {
+    const { title, bucketId, tasks } = this.logs[parentId];
+    const bucket = new Bucket(title, bucketId, tasks);
+    bucket.delete(taskId);
   }
 }
 
