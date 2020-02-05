@@ -87,6 +87,9 @@
   font-size: 17px;
   background-color: transparent;
 }
+.head > .fa-trash:hover {
+  color: rgb(215, 49, 49);
+}
 .listItems {
   display: flex;
   width: 100%;
@@ -100,13 +103,24 @@
   flex-flow: row;
   flex-wrap: wrap;
   padding: 5px;
+  justify-content: space-between;
 }
 .item > .content {
   display: flex;
   flex-flow: row;
   width: 66%;
   flex: 1 1 50%;
+  justify-content: space-evenly;
   flex-wrap: wrap;
+}
+.item > .content > .checkBox {
+  width: 5%;
+}
+.item > .content > .label {
+  width: 85%;
+}
+.item > .operations > .fa-trash:hover {
+  color: rgb(215, 49, 49);
 }
 .newTask {
   display: none;
@@ -119,6 +133,7 @@
   padding: 5px;
 }
 .newTask > .input > input {
+  font-size: 14px;
   width: 100%;
   height: 31px;
   border-radius: 5px;
@@ -149,5 +164,5 @@
 }
 .newtask > .operations > .fa-times:hover {
   font-size: 1.7rem;
-  color: rgb(154, 25, 25);
+  color: rgb(215, 49, 49);
 }
