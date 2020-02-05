@@ -38,9 +38,6 @@ const readBody = function(req, res, next) {
 };
 
 const getCompleteUrl = function(url) {
-  if (url === '/') {
-    return `${STATIC_DIR}/index.html`;
-  }
   return `${STATIC_DIR}${url}`;
 };
 
@@ -71,7 +68,8 @@ const generateGetResponse = function(url, res, body) {
 const loadStaticResponse = function(req, res, next) {
   const completeUrl = getCompleteUrl(req.url);
   if (isFileNotAvailable(completeUrl)) {
-    return next();
+    next();
+    return;
   }
   const body = loadFile(completeUrl);
   generateGetResponse(completeUrl, res, body);
@@ -154,7 +152,7 @@ app.post('/setStatus', handleTaskStatus);
 app.post('/deleteBucket', deleteBucket);
 app.post('/deleteTask', deleteTask);
 app.post('/saveNewTask', saveNewTask);
-app.get('/', serveTodoPage);
+app.get('/index.html', serveTodoPage);
 app.get('', loadStaticResponse);
 app.get('', notFound);
 app.use(methodNotAllowed);
