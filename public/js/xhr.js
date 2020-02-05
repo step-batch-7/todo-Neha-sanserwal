@@ -1,5 +1,5 @@
 const sendStatusRequest = function(event) {
-  req = new XMLHttpRequest();
+  const req = new XMLHttpRequest();
   req.open('POST', '/setStatus');
   req.onload = function() {
     changeMainPageContent(this.status, this.responseText, 'todoPage');

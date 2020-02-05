@@ -52,12 +52,12 @@ const loadOlderTodoLogs = function(todoFile) {
   return JSON.parse(todo);
 };
 
-const saveTodo = function(req, res, next) {
-  let todoLogs = loadOlderTodoLogs(TODO_FILE);
+const saveTodo = function(req, res) {
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const newEntry = Todo.parseNewEntry(req.body);
-  newTodo = new Todo(newEntry, todoLogs);
+  const newTodo = new Todo(newEntry, todoLogs);
   newTodo.appendTo(TODO_FILE, writeTo);
-  let template = readTodoPage();
+  const template = readTodoPage();
   res.end(template);
 };
 
@@ -97,7 +97,7 @@ const toggleStatus = function(status) {
   return 'checked';
 };
 const handleTaskStatus = function(req, res) {
-  let reqBody = JSON.parse(req.body);
+  const reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucket = todoLogs[reqBody.bucketId];
   const task = bucket.tasks[reqBody.taskId];
@@ -107,7 +107,7 @@ const handleTaskStatus = function(req, res) {
 };
 
 const deleteBucket = function(req, res) {
-  let reqBody = JSON.parse(req.body);
+  const reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucketId = reqBody.bucketId;
   delete todoLogs[bucketId];
@@ -116,8 +116,8 @@ const deleteBucket = function(req, res) {
 };
 
 const saveNewTask = function(req, res) {
-  let reqBody = JSON.parse(req.body);
-  let todoLogs = loadOlderTodoLogs(TODO_FILE);
+  const reqBody = JSON.parse(req.body);
+  const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucket = todoLogs[reqBody.bucketId].tasks;
   const newEntry = Todo.parseEntryItem(reqBody);
   const [task] = Object.values(newEntry);
@@ -128,7 +128,7 @@ const saveNewTask = function(req, res) {
 };
 
 const deleteTask = function(req, res) {
-  let reqBody = JSON.parse(req.body);
+  const reqBody = JSON.parse(req.body);
   const todoLogs = loadOlderTodoLogs(TODO_FILE);
   const bucket = todoLogs[reqBody.bucketId];
   const tasks = bucket.tasks;

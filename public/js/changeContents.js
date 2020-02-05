@@ -1,5 +1,6 @@
 const changeMainPageContent = function(status, responseText, contentClass) {
-  if (status === 200) {
+  const Ok = 200;
+  if (status === Ok) {
     document.getElementsByClassName(contentClass)[0].innerHTML = responseText;
   }
 };
