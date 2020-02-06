@@ -18,6 +18,16 @@ const sendSaveRequest = function() {
   const title = document.getElementById('title').value;
   req.send(JSON.stringify({ title }));
 };
+const sendEditTitleRequest = function(event) {
+  const req = new XMLHttpRequest();
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('POST', '/editTitle');
+  const title = event.target.innerText;
+  const bucketId = event.target.id;
+  req.send(JSON.stringify({ title, bucketId }));
+};
 
 const sendDeleteBucketRequest = function(event) {
   const req = new XMLHttpRequest();

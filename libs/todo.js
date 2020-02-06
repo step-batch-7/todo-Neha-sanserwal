@@ -33,6 +33,9 @@ class Bucket {
     this.lastTaskId = ++this.lastTaskId;
     return this.lastTaskId;
   }
+  changeHeading(text) {
+    this.title = text;
+  }
   changeStatus(itemId) {
     const { status, bucketId, taskId, text } = this.tasks[itemId];
     const task = new Task(status, bucketId, taskId, text);
@@ -73,6 +76,11 @@ class TodoLogs {
 
   deleteBucket(bucketId) {
     delete this.logs[bucketId];
+  }
+
+  editBucketTitle(id, text) {
+    const bucket = this.logs[id];
+    bucket.changeHeading(text);
   }
 
   appendTask(parentId, text) {

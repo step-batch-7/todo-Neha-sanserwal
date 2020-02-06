@@ -1,6 +1,13 @@
 <div class="todos">
   <div class="head" id="__bucketId__">
-    <div class="content "><span>__title__</span></div>
+    <div
+      class="content"
+      id="__bucketId__"
+      contenteditable="true"
+      onblur="sendEditTitleRequest(event)"
+    >
+      __title__
+    </div>
     <div class="operations">
       <i
         id="__bucketId__"

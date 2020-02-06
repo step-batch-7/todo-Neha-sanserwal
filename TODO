@@ -39,4 +39,5 @@
 --DONE-- *extract class todoLogs and todo.
 --DONE-- * initially only ask for todo title.
 --DONE-- * extract fileHandler file.
-* add a sequential id assigning mechanism to bucket and task.
+--DONE-- * add a sequential id assigning mechanism to bucket and task.
+--DONE-- * Make title editable.

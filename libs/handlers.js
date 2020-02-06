@@ -83,6 +83,13 @@ const deleteBucket = function(req, res) {
   res.end(readTodoPage());
 };
 
+const editBucketTitle = function(req, res) {
+  const reqBody = JSON.parse(req.body);
+  TODO_LOGS.editBucketTitle(reqBody.bucketId, reqBody.title);
+  TODO_LOGS.write(TODO_FILE, writeTo);
+  res.end(readTodoPage());
+};
+
 //____________________________task handlers_________________________
 
 const handleTaskStatus = function(req, res) {
@@ -123,6 +130,7 @@ app.post('/setStatus', handleTaskStatus);
 app.post('/deleteBucket', deleteBucket);
 app.post('/deleteTask', deleteTask);
 app.post('/saveNewTask', saveNewTask);
+app.post('/editTitle', editBucketTitle);
 app.get('/', serveTodoPage);
 app.get('/', loadStaticResponse);
 app.get('', notFound);
