@@ -16,8 +16,7 @@ const sendSaveRequest = function() {
   };
   req.open('POST', '/saveTodo');
   const title = document.getElementById('title').value;
-  const task = document.getElementById('task').value;
-  req.send(JSON.stringify({ title, task }));
+  req.send(JSON.stringify({ title }));
 };
 
 const sendDeleteBucketRequest = function(event) {

@@ -37,3 +37,5 @@
 --DONE-- * add functionality of adding new task in same bucket.
 --DONE-- * prettify the todo list
 --DONE-- *extract class todoLogs and todo.
+--DONE-- * initially only ask for todo title.
+* add a sequential id assigning mechanism to bucket and task.

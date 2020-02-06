@@ -15,8 +15,7 @@ class Bucket {
     const data = JSON.parse(text);
     const title = data.title;
     const bucketId = getRandomId();
-    const newTask = Task.parse(bucketId, data.task);
-    const tasks = { [newTask.taskId]: newTask };
+    const tasks = {};
     return new Bucket(title, bucketId, tasks);
   }
   add(task) {
