@@ -1,8 +1,10 @@
 const { Task } = require('./task');
-const getRandomId = function() {
-  const range = 10;
-  const randomId = Math.random() * Math.pow(range, range);
-  return Math.floor(randomId);
+const getId = function(keys) {
+  const defaultKey = 1000;
+  if (!keys.length) {
+    return +defaultKey;
+  }
+  return keys.sort().pop();
 };
 
 class Bucket {
@@ -11,10 +13,10 @@ class Bucket {
     this.bucketId = bucketId;
     this.tasks = tasks;
   }
-  static parse(text) {
+  static parse(text, id) {
     const data = JSON.parse(text);
     const title = data.title;
-    const bucketId = getRandomId();
+    const bucketId = id;
     const tasks = {};
     return new Bucket(title, bucketId, tasks);
   }
@@ -33,8 +35,9 @@ class Bucket {
   }
 }
 class TodoLogs {
-  constructor(logs) {
+  constructor(logs, lastId) {
     this.logs = logs;
+    this.lastId = lastId;
   }
 
   static parse(logs) {
@@ -43,7 +46,13 @@ class TodoLogs {
       const { title, bucketId, tasks } = value;
       todoLogs[key] = new Bucket(title, bucketId, tasks);
     }
-    return new TodoLogs(todoLogs);
+    const keys = Object.keys(todoLogs);
+    const lastId = getId(keys);
+    return new TodoLogs(todoLogs, lastId);
+  }
+  get newBucketId() {
+    this.lastId = ++this.lastId;
+    return this.lastId;
   }
 
   write(fileName, writer) {
