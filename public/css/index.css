@@ -65,7 +65,7 @@
   width: 350px;
   flex-flow: column;
   flex-wrap: wrap;
-  height: auto;
+  height: fit-content;
   margin-bottom: 24px;
   border: 1px solid #09d3ac;
   border-radius: 5px;
@@ -74,7 +74,9 @@
   background: #09d3ac;
   padding: 5px;
   color: white;
+  align-items: center;
   display: flex;
+  height: 30px;
   flex-flow: row;
   justify-content: space-between;
 }
@@ -87,8 +89,24 @@
   font-size: 17px;
   background-color: transparent;
 }
-.head > .fa-trash:hover {
+.head > .content {
+  display: flex;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+.head > .operations {
+  width: 15%;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.head > .operations > .fa-trash:hover {
   color: rgb(215, 49, 49);
+}
+.head > .operations > .fa-plus-circle:hover {
+  color: darkslategrey;
 }
 .listItems {
   display: flex;
@@ -152,17 +170,17 @@
   flex-wrap: wrap;
   justify-content: space-between;
 }
-.newtask > .operations > .fa-check {
+.newTask > .operations > .fa-check {
   font-size: 1.5rem;
 }
-.newtask > .operations > .fa-check:hover {
+.newTask > .operations > .fa-check:hover {
   font-size: 1.7rem;
   color: #09d3ac;
 }
-.newtask > .operations > .fa-times {
+.newTask > .operations > .fa-times {
   font-size: 1.5rem;
 }
-.newtask > .operations > .fa-times:hover {
+.newTask > .operations > .fa-times:hover {
   font-size: 1.7rem;
   color: rgb(215, 49, 49);
 }

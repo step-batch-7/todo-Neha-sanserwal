@@ -28,7 +28,7 @@ class Bucket {
   changeStatus(itemId) {
     const { status, bucketId, taskId, text } = this.tasks[itemId];
     const task = new Task(status, bucketId, taskId, text);
-    this.tasks[itemId].toggleStatus();
+    task.toggleStatus();
     this.tasks[itemId] = task;
   }
 }
