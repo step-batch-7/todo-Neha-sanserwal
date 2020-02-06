@@ -62,3 +62,16 @@ const sendDeleteTaskRequest = function(event) {
   const taskId = event.target.id;
   req.send(JSON.stringify({ bucketId, taskId }));
 };
+
+const sendEditTaskRequest = function(event) {
+  const req = new XMLHttpRequest();
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('POST', '/editTask');
+  const taskId = event.target.id;
+  const text = event.target.innerText;
+  const classes = event.target.className;
+  const [bucketId] = classes.split(' ');
+  req.send(JSON.stringify({ taskId, bucketId, text }));
+};

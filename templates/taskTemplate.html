@@ -9,7 +9,14 @@
         id="__taskId__"
       />
     </div>
-    <div class="label"><label for="__taskId__">__text__</label></div>
+    <div
+      class="__bucketId__ label"
+      id="__taskId__"
+      contenteditable="true"
+      onblur="sendEditTaskRequest(event)"
+    >
+      __text__
+    </div>
   </div>
   <div class="operations">
     <i

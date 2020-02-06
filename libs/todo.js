@@ -42,6 +42,12 @@ class Bucket {
     task.toggleStatus();
     this.tasks[itemId] = task;
   }
+  edit(itemId, newText) {
+    const { status, bucketId, taskId, text } = this.tasks[itemId];
+    const task = new Task(status, bucketId, taskId, text);
+    task.change(newText);
+    this.tasks[itemId] = task;
+  }
 }
 class TodoLogs {
   constructor(logs, lastId) {
@@ -94,12 +100,13 @@ class TodoLogs {
     const bucket = new Bucket(title, bucketId, tasks);
     bucket.delete(taskId);
   }
-
+  editTask(bucketId, taskId, text) {
+    const bucket = this.logs[bucketId];
+    bucket.edit(taskId, text);
+  }
   changeTaskStatus(parentId, taskId) {
-    const { title, bucketId, tasks } = this.logs[parentId];
-    const bucket = new Bucket(title, bucketId, tasks);
+    const bucket = this.logs[parentId];
     bucket.changeStatus(taskId);
-    this.logs[parentId] = bucket;
   }
 }
 

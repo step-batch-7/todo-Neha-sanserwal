@@ -113,6 +113,13 @@ const deleteTask = function(req, res) {
   res.end(readTodoPage());
 };
 
+const editTask = function(req, res) {
+  const { bucketId, taskId, text } = JSON.parse(req.body);
+  TODO_LOGS.editTask(bucketId, taskId, text);
+  TODO_LOGS.write(TODO_FILE, writeTo);
+  res.end(readTodoPage());
+};
+
 const notFound = function(req, res) {
   res.writeHead('404', 'NOT FOUND');
   res.end();
@@ -131,6 +138,7 @@ app.post('/deleteBucket', deleteBucket);
 app.post('/deleteTask', deleteTask);
 app.post('/saveNewTask', saveNewTask);
 app.post('/editTitle', editBucketTitle);
+app.post('/editTask', editTask);
 app.get('/', serveTodoPage);
 app.get('/', loadStaticResponse);
 app.get('', notFound);

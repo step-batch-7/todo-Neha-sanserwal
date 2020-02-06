@@ -18,5 +18,8 @@ class Task {
     }
     this.status = 'checked';
   }
+  change(text) {
+    this.text = text;
+  }
 }
 module.exports = { Task };
