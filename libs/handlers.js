@@ -1,7 +1,7 @@
 const { App } = require('./app.js');
 const { loadTodoPage } = require('./viewTodoTemplate');
 const { TodoLogs, Bucket } = require('./todo');
-const { Task } = require('./task');
+
 const {
   loadOlderTodoLogs,
   isFileNotAvailable,
@@ -94,8 +94,7 @@ const handleTaskStatus = function(req, res) {
 
 const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const task = Task.parse(reqBody.bucketId, reqBody.task);
-  TODO_LOGS.appendTask(reqBody.bucketId, task);
+  TODO_LOGS.appendTask(reqBody.bucketId, reqBody.task);
   TODO_LOGS.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };

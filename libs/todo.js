@@ -8,24 +8,30 @@ const getId = function(keys) {
 };
 
 class Bucket {
-  constructor(title, bucketId, tasks) {
+  constructor(title, bucketId, tasks, lastTaskId) {
     this.title = title;
     this.bucketId = bucketId;
     this.tasks = tasks;
+    this.lastTaskId = lastTaskId;
   }
   static parse(text, id) {
     const data = JSON.parse(text);
     const title = data.title;
     const bucketId = id;
+    const lastTaskId = 1000;
     const tasks = {};
-    return new Bucket(title, bucketId, tasks);
+    return new Bucket(title, bucketId, tasks, lastTaskId);
   }
   add(task) {
-    this.tasks[task.taskId] = task;
+    this.tasks[this.lastTaskId] = task;
   }
   delete(taskId) {
     const tasks = this.tasks;
     delete tasks[taskId];
+  }
+  get newTaskId() {
+    this.lastTaskId = ++this.lastTaskId;
+    return this.lastTaskId;
   }
   changeStatus(itemId) {
     const { status, bucketId, taskId, text } = this.tasks[itemId];
@@ -43,13 +49,14 @@ class TodoLogs {
   static parse(logs) {
     const todoLogs = {};
     for (const [key, value] of Object.entries(logs)) {
-      const { title, bucketId, tasks } = value;
-      todoLogs[key] = new Bucket(title, bucketId, tasks);
+      const { title, bucketId, tasks, lastTaskId } = value;
+      todoLogs[key] = new Bucket(title, bucketId, tasks, lastTaskId);
     }
     const keys = Object.keys(todoLogs);
     const lastId = getId(keys);
     return new TodoLogs(todoLogs, lastId);
   }
+
   get newBucketId() {
     this.lastId = ++this.lastId;
     return this.lastId;
@@ -68,8 +75,9 @@ class TodoLogs {
     delete this.logs[bucketId];
   }
 
-  appendTask(parentId, task) {
+  appendTask(parentId, text) {
     const bucket = this.logs[parentId];
+    const task = Task.parse(parentId, bucket.newTaskId, text);
     bucket.add(task);
   }
 
@@ -78,6 +86,7 @@ class TodoLogs {
     const bucket = new Bucket(title, bucketId, tasks);
     bucket.delete(taskId);
   }
+
   changeTaskStatus(parentId, taskId) {
     const { title, bucketId, tasks } = this.logs[parentId];
     const bucket = new Bucket(title, bucketId, tasks);
