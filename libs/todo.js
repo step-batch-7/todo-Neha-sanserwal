@@ -28,13 +28,22 @@ class Bucket {
   changeStatus(itemId) {
     const { status, bucketId, taskId, text } = this.tasks[itemId];
     const task = new Task(status, bucketId, taskId, text);
-    task.toggleStatus();
+    this.tasks[itemId].toggleStatus();
     this.tasks[itemId] = task;
   }
 }
 class TodoLogs {
   constructor(logs) {
     this.logs = logs;
+  }
+
+  static parse(logs) {
+    const todoLogs = {};
+    for (const [key, value] of Object.entries(logs)) {
+      const { title, bucketId, tasks } = value;
+      todoLogs[key] = new Bucket(title, bucketId, tasks);
+    }
+    return new TodoLogs(todoLogs);
   }
 
   write(fileName, writer) {
@@ -51,10 +60,8 @@ class TodoLogs {
   }
 
   appendTask(parentId, task) {
-    const { title, bucketId, tasks } = this.logs[parentId];
-    const bucket = new Bucket(title, bucketId, tasks);
+    const bucket = this.logs[parentId];
     bucket.add(task);
-    this.logs[parentId] = bucket;
   }
 
   deleteTask(parentId, taskId) {

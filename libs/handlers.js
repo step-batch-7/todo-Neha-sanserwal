@@ -1,26 +1,17 @@
-const fs = require('fs');
 const { App } = require('./app.js');
 const { loadTodoPage } = require('./viewTodoTemplate');
 const { TodoLogs, Bucket } = require('./todo');
 const { Task } = require('./task');
+const {
+  loadOlderTodoLogs,
+  isFileNotAvailable,
+  writeTo,
+  loadFile
+} = require('./fileOperators');
+
 const STATIC_DIR = `${__dirname}/../public`;
 const TODO_FILE = `${__dirname}/../docs/todos.json`;
-
-const loadFile = function(filePath, encoding) {
-  if (encoding) {
-    return fs.readFileSync(filePath, encoding);
-  }
-  return fs.readFileSync(filePath);
-};
-
-const writeTo = function(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data));
-};
-
-const isFileNotAvailable = function(filePath) {
-  const stats = fs.existsSync(filePath) && fs.statSync(filePath);
-  return !stats || !stats.isFile();
-};
+const TODO_LOGS = TodoLogs.parse(loadOlderTodoLogs(TODO_FILE));
 
 const readBody = function(req, res, next) {
   let text = '';
@@ -44,14 +35,6 @@ const getCompleteUrl = function(url) {
 const getFileExtension = function(fileName) {
   const fileExt = fileName.split('.').pop();
   return fileExt;
-};
-
-const loadOlderTodoLogs = function(todoFile) {
-  if (!fs.existsSync(todoFile)) {
-    writeTo(todoFile, {});
-  }
-  const todo = loadFile(todoFile);
-  return JSON.parse(todo);
 };
 
 const generateGetResponse = function(url, res, body) {
@@ -86,21 +69,17 @@ const serveTodoPage = function(req, res) {
 //____________________________bucket handlers_________________________
 
 const saveBucket = function(req, res) {
-  const logs = loadOlderTodoLogs(TODO_FILE);
-  const todoLogs = new TodoLogs(logs);
   const bucket = Bucket.parse(req.body);
-  todoLogs.append(bucket);
-  todoLogs.write(TODO_FILE, writeTo);
+  TODO_LOGS.append(bucket);
+  TODO_LOGS.write(TODO_FILE, writeTo);
   const template = readTodoPage();
   res.end(template);
 };
 
 const deleteBucket = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const logs = loadOlderTodoLogs(TODO_FILE);
-  const todoLogs = new TodoLogs(logs);
-  todoLogs.deleteBucket(reqBody.bucketId);
-  todoLogs.write(TODO_FILE, writeTo);
+  TODO_LOGS.deleteBucket(reqBody.bucketId);
+  TODO_LOGS.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
@@ -108,29 +87,23 @@ const deleteBucket = function(req, res) {
 
 const handleTaskStatus = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const logs = loadOlderTodoLogs(TODO_FILE);
-  const todoLogs = new TodoLogs(logs);
-  todoLogs.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
-  todoLogs.write(TODO_FILE, writeTo);
+  TODO_LOGS.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
+  TODO_LOGS.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
 const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const logs = loadOlderTodoLogs(TODO_FILE);
-  const todoLogs = new TodoLogs(logs);
   const task = Task.parse(reqBody.bucketId, reqBody.task);
-  todoLogs.appendTask(reqBody.bucketId, task);
-  todoLogs.write(TODO_FILE, writeTo);
+  TODO_LOGS.appendTask(reqBody.bucketId, task);
+  TODO_LOGS.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
 const deleteTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
-  const logs = loadOlderTodoLogs(TODO_FILE);
-  const todoLogs = new TodoLogs(logs);
-  todoLogs.deleteTask(reqBody.bucketId, reqBody.taskId);
-  todoLogs.write(TODO_FILE, writeTo);
+  TODO_LOGS.deleteTask(reqBody.bucketId, reqBody.taskId);
+  TODO_LOGS.write(TODO_FILE, writeTo);
   res.end(readTodoPage());
 };
 
