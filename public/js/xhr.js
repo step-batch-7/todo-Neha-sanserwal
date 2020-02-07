@@ -76,7 +76,7 @@ const sendEditTaskRequest = function(event) {
   req.send(JSON.stringify({ taskId, bucketId, text }));
 };
 
-const sendData = function(event) {
+const sendSearchRequest = function(event) {
   const req = new XMLHttpRequest();
   const text = event.target.value;
   req.onload = function() {
