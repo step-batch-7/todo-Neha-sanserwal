@@ -95,9 +95,15 @@
   font-size: 16px;
   padding-bottom: 2px;
   width: 80%;
+  border-bottom: 0px;
+  transition: border-bottom 4s linear;
   text-transform: capitalize;
 }
 .head > .content:focus {
+  outline: #09d3ac;
+}
+.head > .content:hover,
+.content:focus {
   border-bottom: 1px solid white;
 }
 .head > .operations {
@@ -142,6 +148,16 @@
 .item > .content > .label {
   width: 85%;
 }
+
+.item > .content > .label:focus {
+  outline: white;
+}
+.item > .content > .label:hover,
+.label:focus {
+  border-bottom: 1px solid #09d3ac;
+  width: 85%;
+}
+
 .item > .operations > .fa-trash:hover {
   color: rgb(215, 49, 49);
 }

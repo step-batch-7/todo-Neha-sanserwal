@@ -15,9 +15,11 @@ class Task {
   toggleStatus() {
     if (this.status === 'checked') {
       this.status = '';
+      return;
     }
     this.status = 'checked';
   }
+
   change(text) {
     this.text = text;
   }
