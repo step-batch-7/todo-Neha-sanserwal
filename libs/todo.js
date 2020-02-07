@@ -108,6 +108,17 @@ class TodoLogs {
     const bucket = this.logs[parentId];
     bucket.changeStatus(taskId);
   }
+
+  search(text) {
+    const searchedLogs = {};
+    const buckets = Object.values(this.logs);
+    for (const bucket of buckets) {
+      if (bucket.title.includes(text)) {
+        searchedLogs[bucket.bucketId] = bucket;
+      }
+    }
+    return searchedLogs;
+  }
 }
 
 module.exports = {

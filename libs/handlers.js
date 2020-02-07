@@ -1,5 +1,5 @@
 const { App } = require('./app.js');
-const { loadTodoPage } = require('./viewTodoTemplate');
+const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const { TodoLogs, Bucket } = require('./todo');
 
 const {
@@ -128,6 +128,15 @@ const methodNotAllowed = function(req, res) {
   res.writeHead('400', 'Method Not Allowed');
   res.end();
 };
+const search = function(req, res) {
+  const reqBody = JSON.parse(req.body);
+  if (reqBody.text === '') {
+    res.end(readTodoPage());
+  }
+  const searchedLogs = TODO_LOGS.search(reqBody.text);
+  const cards = readCards(searchedLogs, loadFile);
+  res.end(cards);
+};
 
 const app = new App();
 
@@ -139,6 +148,7 @@ app.post('/deleteTask', deleteTask);
 app.post('/saveNewTask', saveNewTask);
 app.post('/editTitle', editBucketTitle);
 app.post('/editTask', editTask);
+app.post('/search', search);
 app.get('/', serveTodoPage);
 app.get('/', loadStaticResponse);
 app.get('', notFound);

@@ -1,11 +1,16 @@
+.page,
 .todoPage {
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
 }
+.todoPage {
+  width: 70%;
+}
+
 .todoPage > .heading {
   display: flex;
   flex-flow: column;

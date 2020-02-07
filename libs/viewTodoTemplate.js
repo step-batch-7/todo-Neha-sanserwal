@@ -3,42 +3,45 @@ const replaceText = function(key, value, template) {
   const newTemplate = template.replace(pattern, value);
   return newTemplate;
 };
-const readTask = function(task, loadFile) {
-  let taskTemplate = loadFile('templates/taskTemplate.html', 'utf8');
+const readTask = function(task, reader) {
+  let taskTemplate = reader('templates/taskTemplate.html', 'utf8');
   for (const [key, value] of Object.entries(task)) {
     taskTemplate = replaceText(key, value, taskTemplate);
   }
   return taskTemplate;
 };
 
-const collectTaskList = function(tasks, loadFile) {
+const collectTaskList = function(tasks, reader) {
   let listTemplate = '';
   for (const [, value] of Object.entries(tasks)) {
-    listTemplate += readTask(value, loadFile);
+    listTemplate += readTask(value, reader);
   }
   return listTemplate;
 };
 
-const readTodoList = function(bucket, loadFile) {
-  let todoTemplate = loadFile('templates/todoTemplate.html', 'utf8');
+const readTodoList = function(bucket, reader) {
+  let todoTemplate = reader('templates/todoTemplate.html', 'utf8');
   for (const [key, value] of Object.entries(bucket)) {
     if (key !== 'tasks') {
       todoTemplate = replaceText(key, value, todoTemplate);
     } else {
-      const allTasks = collectTaskList(value, loadFile);
+      const allTasks = collectTaskList(value, reader);
       todoTemplate = replaceText(key, allTasks, todoTemplate);
     }
   }
   return todoTemplate;
 };
-
-const loadTodoPage = function(allTodo, loadFile) {
-  const todoPage = loadFile('templates/todoPage.html', 'utf8');
+const readCards = function(allTodo, reader) {
   let todoCards = '';
   for (const [, value] of Object.entries(allTodo)) {
-    todoCards += readTodoList(value, loadFile);
+    todoCards += readTodoList(value, reader);
   }
+  return todoCards;
+};
+const loadTodoPage = function(allTodo, loadFile) {
+  const todoPage = loadFile('templates/todoPage.html', 'utf8');
+  const todoCards = readCards(allTodo, loadFile);
   return todoPage.replace('__todo__', todoCards);
 };
 
-module.exports = { loadTodoPage };
+module.exports = { loadTodoPage, readCards };

@@ -54,11 +54,11 @@ const sendSaveNewTaskRequest = function(event) {
 const sendDeleteTaskRequest = function(event) {
   const classes = event.target.className;
   const req = new XMLHttpRequest();
+  const [bucketId] = classes.split(' ');
   req.onload = function() {
     changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
   req.open('POST', '/deleteTask');
-  const [bucketId] = classes.split(' ');
   const taskId = event.target.id;
   req.send(JSON.stringify({ bucketId, taskId }));
 };
@@ -74,4 +74,14 @@ const sendEditTaskRequest = function(event) {
   const classes = event.target.className;
   const [bucketId] = classes.split(' ');
   req.send(JSON.stringify({ taskId, bucketId, text }));
+};
+
+const sendData = function(event) {
+  const req = new XMLHttpRequest();
+  const text = event.target.value;
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('POST', '/search');
+  req.send(JSON.stringify({ text }));
 };
