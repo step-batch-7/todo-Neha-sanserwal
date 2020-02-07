@@ -7,11 +7,33 @@
   width: 100%;
   margin: 0 auto;
 }
-.todoPage {
-  width: 70%;
+.headers {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  width: 98%;
+  margin: 0 auto;
+}
+.searchBar {
+  display: flex;
+  align-items: center;
+}
+.searchBar > input {
+  font-family: sans-serif, FontAwesome;
+  border: none;
+  height: 30px;
+  width: 300px;
+  font-size: 15px;
+  border-bottom: 2px solid;
+  background: none;
 }
 
-.todoPage > .heading {
+.todoPage {
+  width: 70%;
+  margin-top: 7%;
+}
+
+.headers > .heading {
   display: flex;
   flex-flow: column;
   flex-wrap: wrap;
@@ -53,12 +75,11 @@
 }
 .submit-btn:hover {
   background: #09d3ac;
-
   color: white;
 }
 .todo-list {
   display: flex;
-  margin-top: 20px;
+  margin-top: 8%;
   width: 100%;
   flex-flow: row;
   flex: 1 1 50%;

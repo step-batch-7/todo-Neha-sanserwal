@@ -42,3 +42,5 @@
 --DONE-- * add a sequential id assigning mechanism to bucket and task.
 --DONE-- * Make title editable.
 --DONE-- * Make task editable.
+--DONE-- * add a search bar to the page.
+--DONE-- Added styling to search bar.
