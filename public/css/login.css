@@ -1,0 +1,26 @@
+.loginPage {
+  height: 500px;
+  width: 50%;
+}
+.loginContainer {
+  margin: 0 auto;
+  width: 50%;
+  display: flex;
+  flex-flow: column;
+  justify-items: center;
+  justify-content: space-between;
+}
+.loginContainer > input {
+  padding: 5px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  height: 25px;
+  font-size: 15px;
+  margin-bottom: 5%;
+}
+.loginContainer > button {
+  width: 80px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  font-size: 15px;
+}
