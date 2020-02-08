@@ -83,6 +83,6 @@ const sendSearchRequest = function(event) {
   req.onload = function() {
     changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
-  req.open('POST', `/search${searchBy}`);
-  req.send(JSON.stringify({ text }));
+  req.open('POST', '/search');
+  req.send(JSON.stringify({ text, searchBy }));
 };

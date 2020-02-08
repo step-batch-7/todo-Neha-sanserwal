@@ -7,6 +7,11 @@ const getId = function(keys) {
   return keys.sort().pop();
 };
 
+const isMatched = function(textA, textB) {
+  const regExp = new RegExp(textB, 'ig');
+  return regExp.test(textA);
+};
+
 class Bucket {
   constructor(title, bucketId, tasks, lastTaskId) {
     this.title = title;
@@ -48,10 +53,14 @@ class Bucket {
     task.change(newText);
     this.tasks[itemId] = task;
   }
+  hasTitle(text) {
+    return isMatched(this.title, text);
+  }
+
   hasTask(text) {
     const tasks = this.tasks;
     for (const [, task] of Object.entries(tasks)) {
-      if (task.text.includes(text)) {
+      if (isMatched(task.text, text)) {
         return true;
       }
     }
@@ -117,24 +126,24 @@ class TodoLogs {
     bucket.changeStatus(taskId);
   }
 
-  searchTitle(text) {
-    const searchedLogs = {};
-    const buckets = Object.values(this.logs);
-    for (const bucket of buckets) {
-      if (bucket.title.includes(text)) {
-        searchedLogs[bucket.bucketId] = bucket;
-      }
-    }
-    return searchedLogs;
-  }
   searchTask(text) {
     const searchedLogs = {};
     const buckets = Object.values(this.logs);
-    for (const bucket of buckets) {
+    buckets.forEach(function(bucket) {
       if (bucket.hasTask(text)) {
         searchedLogs[bucket.bucketId] = bucket;
       }
-    }
+    });
+    return searchedLogs;
+  }
+  searchTitle(text) {
+    const searchedLogs = {};
+    const buckets = Object.values(this.logs);
+    buckets.forEach(function(bucket) {
+      if (bucket.hasTitle(text)) {
+        searchedLogs[bucket.bucketId] = bucket;
+      }
+    });
     return searchedLogs;
   }
 }
