@@ -18,18 +18,28 @@
     <title>todo app</title>
   </head>
   <body>
-    <div class= 'headers'>
-    
-    <div class="heading">
+    <div class="headers">
+      <div class="heading">
         <h1>POST IT</h1>
-    </div>
-    <div class="searchBar">
-      <input required type="text" value="" onkeyup="sendSearchRequest(event)" placeholder="&#xF002; Search"/>
-    </div>
-    </div>
-      <div class="todoPage">
-        __todoPage__
       </div>
-    </>
+      <div class="searchBar">
+        <input
+          required
+          type="text"
+          value=""
+          onkeyup="sendSearchRequest(event)"
+          placeholder="&#xF002; Search"
+        />
+        <div class="toggle">
+          <input type="checkbox" id="check" />
+          <label for="check" onclick="changeSearchBy()">
+            <div class="searchBy" data-searchby="Title"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="todoPage">
+      __todoPage__
+    </div>
   </body>
 </html>

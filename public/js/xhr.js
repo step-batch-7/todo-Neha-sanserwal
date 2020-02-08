@@ -79,9 +79,10 @@ const sendEditTaskRequest = function(event) {
 const sendSearchRequest = function(event) {
   const req = new XMLHttpRequest();
   const text = event.target.value;
+  const searchBy = document.querySelector('.searchBy').dataset.searchby;
   req.onload = function() {
     changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
-  req.open('POST', '/search');
+  req.open('POST', `/search${searchBy}`);
   req.send(JSON.stringify({ text }));
 };

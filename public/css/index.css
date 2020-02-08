@@ -145,8 +145,11 @@
   color: darkslategrey;
 }
 .listItems {
+  background: white;
   display: flex;
   width: 100%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -229,4 +232,46 @@
 .newTask > .operations > .fa-times:hover {
   font-size: 1.7rem;
   color: rgb(215, 49, 49);
+}
+
+#check {
+  display: none;
+}
+.toggle > label {
+  display: flex;
+  flex-flow: row;
+  height: 30px;
+  width: 100px;
+  border: 1px solid;
+  border-radius: 30px;
+}
+
+.toggle > label > .searchBy::before {
+  background: gray;
+  color: white;
+  content: 'Title';
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+  height: 30px;
+  width: 60px;
+  border-radius: 15px;
+}
+
+#check:checked + label {
+  flex-flow: row-reverse;
+}
+
+#check:checked + label > .searchBy::before {
+  background: #09d3ac;
+  color: white;
+  content: 'Task';
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+  height: 30px;
+  width: 60px;
+  border-radius: 15px;
 }

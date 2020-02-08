@@ -128,7 +128,7 @@ const methodNotAllowed = function(req, res) {
   res.writeHead('400', 'Method Not Allowed');
   res.end();
 };
-const search = function(req, res) {
+const searchTitle = function(req, res) {
   const reqBody = JSON.parse(req.body);
   if (reqBody.text === '') {
     res.end(readTodoPage());
@@ -136,6 +136,13 @@ const search = function(req, res) {
   const searchedLogs = TODO_LOGS.search(reqBody.text);
   const cards = readCards(searchedLogs, loadFile);
   res.end(cards);
+};
+const searchTask = function(req, res) {
+  const reqBody = JSON.parse(req.body);
+  if (reqBody.text === '') {
+    res.end(readTodoPage());
+  }
+  res.end('Your Tasks');
 };
 
 const app = new App();
@@ -148,7 +155,8 @@ app.post('/deleteTask', deleteTask);
 app.post('/saveNewTask', saveNewTask);
 app.post('/editTitle', editBucketTitle);
 app.post('/editTask', editTask);
-app.post('/search', search);
+app.post('/searchTitle', searchTitle);
+app.post('/searchTask', searchTask);
 app.get('/', serveTodoPage);
 app.get('/', loadStaticResponse);
 app.get('', notFound);
