@@ -48,6 +48,14 @@ class Bucket {
     task.change(newText);
     this.tasks[itemId] = task;
   }
+  hasTask(text) {
+    const tasks = this.tasks;
+    for (const [, task] of Object.entries(tasks)) {
+      if (task.text.includes(text)) {
+        return true;
+      }
+    }
+  }
 }
 class TodoLogs {
   constructor(logs, lastId) {
@@ -109,11 +117,21 @@ class TodoLogs {
     bucket.changeStatus(taskId);
   }
 
-  search(text) {
+  searchTitle(text) {
     const searchedLogs = {};
     const buckets = Object.values(this.logs);
     for (const bucket of buckets) {
       if (bucket.title.includes(text)) {
+        searchedLogs[bucket.bucketId] = bucket;
+      }
+    }
+    return searchedLogs;
+  }
+  searchTask(text) {
+    const searchedLogs = {};
+    const buckets = Object.values(this.logs);
+    for (const bucket of buckets) {
+      if (bucket.hasTask(text)) {
         searchedLogs[bucket.bucketId] = bucket;
       }
     }

@@ -133,7 +133,7 @@ const searchTitle = function(req, res) {
   if (reqBody.text === '') {
     res.end(readTodoPage());
   }
-  const searchedLogs = TODO_LOGS.search(reqBody.text);
+  const searchedLogs = TODO_LOGS.searchTitle(reqBody.text);
   const cards = readCards(searchedLogs, loadFile);
   res.end(cards);
 };
@@ -142,7 +142,10 @@ const searchTask = function(req, res) {
   if (reqBody.text === '') {
     res.end(readTodoPage());
   }
-  res.end('Your Tasks');
+  const searchedLogs = TODO_LOGS.searchTask(reqBody.text);
+  const cards = readCards(searchedLogs, loadFile);
+  res.end(cards);
+  res.end();
 };
 
 const app = new App();
