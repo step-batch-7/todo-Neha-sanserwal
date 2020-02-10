@@ -1,4 +1,3 @@
-const { App } = require('./app.js');
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const { TodoLogs, Bucket } = require('./todo');
 
@@ -144,21 +143,18 @@ const search = function(req, res) {
   const cards = readCards(searchedLogs, loadFile);
   res.end(cards);
 };
-
-const app = new App();
-
-app.use(readBody);
-app.post('/saveTodo', saveBucket);
-app.post('/setStatus', handleTaskStatus);
-app.post('/deleteBucket', deleteBucket);
-app.post('/deleteTask', deleteTask);
-app.post('/saveNewTask', saveNewTask);
-app.post('/editTitle', editBucketTitle);
-app.post('/editTask', editTask);
-app.post('/search', search);
-app.get('/', serveTodoPage);
-app.get('/', loadStaticResponse);
-app.get('', notFound);
-app.use(methodNotAllowed);
-
-module.exports = { app };
+module.exports = {
+  search,
+  readBody,
+  loadStaticResponse,
+  saveBucket,
+  saveNewTask,
+  deleteBucket,
+  deleteTask,
+  editTask,
+  notFound,
+  methodNotAllowed,
+  editBucketTitle,
+  handleTaskStatus,
+  serveTodoPage
+};

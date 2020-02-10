@@ -45,3 +45,5 @@
 --DONE-- * add a search bar to the page.
 --DONE-- * Added styling to search bar.
 --DONE-- * add functionality of search by task.
+--DONE-- * write tests for bucket and task.
+--DONE-- * separate routes.js. to another file.

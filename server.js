@@ -1,10 +1,10 @@
 const http = require('http');
-const { app } = require('./libs/handlers');
+const { handleRequest } = require('./libs/routes');
 
 const defaultPort = 8000;
 
 const main = function(port = defaultPort) {
-  const server = new http.Server(app.serve.bind(app));
+  const server = new http.Server(handleRequest);
 
   server.listen(port);
 };
