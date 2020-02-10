@@ -1,6 +1,5 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const { TodoLogs, Bucket } = require('./todo');
-
 const {
   loadOlderTodoLogs,
   isFileNotAvailable,
@@ -60,6 +59,7 @@ const readTodoPage = function() {
 
 const serveTodoPage = function(req, res) {
   const todoPage = readTodoPage();
+  res.setHeader('content-type', 'text/html');
   res.end(todoPage);
 };
 
