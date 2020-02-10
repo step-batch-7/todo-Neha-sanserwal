@@ -20,8 +20,7 @@ class Bucket {
     this.lastTaskId = lastTaskId;
   }
   static parse(text, id) {
-    const data = JSON.parse(text);
-    const title = data.title;
+    const title = text;
     const bucketId = id;
     const lastTaskId = 1000;
     const tasks = {};
