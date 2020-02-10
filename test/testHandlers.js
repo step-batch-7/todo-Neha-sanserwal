@@ -35,14 +35,6 @@ describe('GET request', function() {
   });
 });
 
-describe('not found ', function() {
-  it('should give error of not found when the file is not present', function(done) {
-    request(app.serve.bind(app))
-      .get('/abc')
-      .expect(404, done);
-  });
-});
-
 describe('Bad request', function() {
   it('should not allow methods on page which are not allowed', function(done) {
     request(app.serve.bind(app))
