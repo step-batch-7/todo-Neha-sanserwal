@@ -62,10 +62,16 @@ describe('POST request', function() {
     });
     sinon.replace(fs, 'writeFileSync', () => {});
   });
-  it('should post the todo', function(done) {
+  it('/saveTodo should post the todo', function(done) {
     request(handleRequest)
       .post('/saveTodo')
-      .send({ username: 'john', comment: 'hello' })
+      .send('{ "title": "class" }')
+      .expect(200, done);
+  });
+  it('/deleteBucket should delete a todo', function(done) {
+    request(handleRequest)
+      .post('/deleteBucket')
+      .send({})
       .expect(200, done);
   });
   after(() => {

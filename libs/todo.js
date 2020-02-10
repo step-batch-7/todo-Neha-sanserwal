@@ -22,7 +22,7 @@ class Bucket {
   static parse(text, id) {
     const title = text;
     const bucketId = id;
-    const lastTaskId = 1000;
+    const lastTaskId = 2000;
     const tasks = {};
     return new Bucket(title, bucketId, tasks, lastTaskId);
   }

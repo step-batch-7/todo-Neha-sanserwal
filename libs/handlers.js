@@ -65,8 +65,11 @@ const serveTodoPage = function(req, res) {
 
 //____________________________bucket handlers_________________________
 
-const saveBucket = function(req, res) {
+const saveBucket = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
+  if (!reqBody.title) {
+    next();
+  }
   const bucket = Bucket.parse(reqBody.title, TODO_LOGS.newBucketId);
   TODO_LOGS.append(bucket);
   TODO_LOGS.write(TODO_FILE, writeTo);

@@ -4,7 +4,7 @@ const { Bucket } = require('../libs/todo');
 describe('Bucket', function() {
   describe('parse', function() {
     it('should parse todo', function() {
-      const bucket = new Bucket('class', 1, {}, 1000);
+      const bucket = new Bucket('class', 1, {}, 2000);
       assert.deepStrictEqual(Bucket.parse('class', 1), bucket);
     });
   });
