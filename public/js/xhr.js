@@ -6,7 +6,9 @@ const handleXhrRequest = function(url, method, data, callback) {
   req.open(method, url);
   req.send(JSON.stringify(data));
 };
-
+const serveTodo = function() {
+  handleXhrRequest('/index.html', 'GET', {}, changeMainPageContent);
+};
 const sendSaveRequest = function() {
   const title = document.getElementById('title').value;
   handleXhrRequest('/saveTodo', 'POST', { title }, changeMainPageContent);

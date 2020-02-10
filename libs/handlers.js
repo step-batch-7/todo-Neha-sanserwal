@@ -52,17 +52,15 @@ const loadStaticResponse = function(req, res, next) {
   const body = loadFile(completeUrl);
   generateGetResponse(completeUrl, res, body);
 };
+
 const readTodoPage = function() {
   const allTodo = loadOlderTodoLogs(TODO_FILE);
   return loadTodoPage(allTodo, loadFile);
 };
 
 const serveTodoPage = function(req, res) {
-  const completeUrl = getCompleteUrl(req.url);
-  let mainPage = loadFile(completeUrl, 'utf8');
   const todoPage = readTodoPage();
-  mainPage = mainPage.replace('__todoPage__', todoPage);
-  generateGetResponse(completeUrl, res, mainPage);
+  res.end(todoPage);
 };
 
 //____________________________bucket handlers_________________________

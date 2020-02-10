@@ -11,7 +11,7 @@ app.post('/saveNewTask', handlers.saveNewTask);
 app.post('/editTitle', handlers.editBucketTitle);
 app.post('/editTask', handlers.editTask);
 app.post('/search', handlers.search);
-app.get('/', handlers.serveTodoPage);
+app.get('/index.html', handlers.serveTodoPage);
 app.get('/', handlers.loadStaticResponse);
 app.get('', handlers.notFound);
 app.use(handlers.methodNotAllowed);
