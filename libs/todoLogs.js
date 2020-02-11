@@ -32,8 +32,8 @@ class TodoLogs {
     return this.lastId;
   }
 
-  write(fileName, writer) {
-    writer(fileName, this.logs);
+  write(writer) {
+    writer(this.logs);
   }
 
   append(title) {

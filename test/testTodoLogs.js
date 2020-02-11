@@ -36,7 +36,7 @@ describe('TodoLogs', function() {
     it('should write the data to given file', function() {
       const fakeWrite = sinon.fake();
       const todoLogs = new TodoLogs({}, 2000);
-      todoLogs.write('./path', fakeWrite);
+      todoLogs.write(fakeWrite);
       sinon.assert.calledOnce(fakeWrite);
     });
   });

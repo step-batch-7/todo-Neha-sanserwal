@@ -1,16 +1,12 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
-const { Bucket } = require('./todo');
-const { TodoLogs } = require('./todoLogs');
 const {
-  loadOlderTodoLogs,
   isFileNotAvailable,
   writeTo,
-  loadFile
+  loadFile,
+  TODO_LOGS
 } = require('./fileOperators');
 
 const STATIC_DIR = `${__dirname}/../public`;
-const TODO_FILE = `${__dirname}/../docs/todos.json`;
-const TODO_LOGS = TodoLogs.parse(loadOlderTodoLogs(TODO_FILE));
 
 const readBody = function(req, res, next) {
   let text = '';
@@ -54,7 +50,7 @@ const loadStaticResponse = function(req, res, next) {
 };
 
 const readTodoPage = function() {
-  const allTodo = loadOlderTodoLogs(TODO_FILE);
+  const allTodo = TODO_LOGS.logs;
   return loadTodoPage(allTodo, loadFile);
 };
 
@@ -72,22 +68,26 @@ const saveBucket = function(req, res, next) {
     next();
   }
   TODO_LOGS.append(reqBody.title);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   const template = readTodoPage();
   res.end(template);
 };
 
-const deleteBucket = function(req, res) {
+const deleteBucket = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
+  if (!reqBody.bucketId) {
+    next();
+  }
   TODO_LOGS.deleteBucket(reqBody.bucketId);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const editBucketTitle = function(req, res) {
   const reqBody = JSON.parse(req.body);
+  console.log(TODO_LOGS);
   TODO_LOGS.editBucketTitle(reqBody.bucketId, reqBody.title);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
@@ -96,28 +96,28 @@ const editBucketTitle = function(req, res) {
 const handleTaskStatus = function(req, res) {
   const reqBody = JSON.parse(req.body);
   TODO_LOGS.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const saveNewTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
   TODO_LOGS.appendTask(reqBody.bucketId, reqBody.task);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const deleteTask = function(req, res) {
   const reqBody = JSON.parse(req.body);
   TODO_LOGS.deleteTask(reqBody.bucketId, reqBody.taskId);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const editTask = function(req, res) {
   const { bucketId, taskId, text } = JSON.parse(req.body);
   TODO_LOGS.editTask(bucketId, taskId, text);
-  TODO_LOGS.write(TODO_FILE, writeTo);
+  TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 

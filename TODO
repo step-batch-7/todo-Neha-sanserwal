@@ -49,4 +49,5 @@
 --DONE-- * separate routes.js. to another file.
 --DONE-- 8 extract handleXhr request.
 --Done-- * extract class bucket to another file.
--- * write tests for todoLogs.
+--DONE-- * write tests for todoLogs.
+-- * write tests for post method handlers.

@@ -1,4 +1,7 @@
 const fs = require('fs');
+const { TodoLogs } = require('../libs/todoLogs');
+const TODO_FILE = `${__dirname}/../docs/todos.json`;
+
 const loadFile = function(filePath, encoding) {
   if (encoding) {
     return fs.readFileSync(filePath, encoding);
@@ -6,8 +9,8 @@ const loadFile = function(filePath, encoding) {
   return fs.readFileSync(filePath);
 };
 
-const writeTo = function(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data));
+const writeTo = function(data) {
+  fs.writeFileSync(TODO_FILE, JSON.stringify(data));
 };
 
 const isFileNotAvailable = function(filePath) {
@@ -22,8 +25,11 @@ const loadOlderTodoLogs = function(todoFile) {
   const todo = loadFile(todoFile);
   return JSON.parse(todo);
 };
+
+const TODO_LOGS = TodoLogs.parse(loadOlderTodoLogs(TODO_FILE));
+
 module.exports = {
-  loadOlderTodoLogs,
+  TODO_LOGS,
   isFileNotAvailable,
   writeTo,
   loadFile
