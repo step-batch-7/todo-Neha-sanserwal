@@ -83,9 +83,11 @@ const deleteBucket = function(req, res, next) {
   res.end(readTodoPage());
 };
 
-const editBucketTitle = function(req, res) {
+const editBucketTitle = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
-  console.log(TODO_LOGS);
+  if (!reqBody.bucketId) {
+    next();
+  }
   TODO_LOGS.editBucketTitle(reqBody.bucketId, reqBody.title);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
@@ -100,8 +102,11 @@ const handleTaskStatus = function(req, res) {
   res.end(readTodoPage());
 };
 
-const saveNewTask = function(req, res) {
+const saveNewTask = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
+  if (!(reqBody.bucketId && reqBody.task)) {
+    next();
+  }
   TODO_LOGS.appendTask(reqBody.bucketId, reqBody.task);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());

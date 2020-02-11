@@ -75,4 +75,18 @@ describe('POST request', function() {
       .send('{ "bucketId": 1000, "title": "office" }')
       .expect(200, done);
   });
+  it('should save the given task', done => {
+    sinon.stub(TODO_LOGS, 'appendTask');
+    request(handleRequest)
+      .post('/saveNewTask')
+      .send('{ "bucketId": 1000, "task":"hello"}')
+      .expect(200, done);
+  });
+  it('should delete the task of give id', done => {
+    sinon.stub(TODO_LOGS, 'deleteTask');
+    request(handleRequest)
+      .post('/deleteTask')
+      .send('{ "bucketId": 1000, "taskId":"2000"}')
+      .expect(200, done);
+  });
 });
