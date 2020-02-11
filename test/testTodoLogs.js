@@ -1,6 +1,8 @@
 const sinon = require('sinon');
 const { assert } = require('chai');
 const { TodoLogs } = require('../libs/todoLogs');
+const { Bucket } = require('../libs/todo');
+const { Task } = require('../libs/task');
 
 describe('TodoLogs', function() {
   describe('parse', function() {
@@ -37,34 +39,49 @@ describe('TodoLogs', function() {
   describe('append', function() {
     it('should append the new todo of given title to todoLogs', function() {
       const todoLogs = new TodoLogs({}, 100);
+      const bucket = new Bucket('office', 101, {}, 2000);
       todoLogs.append('office');
-      assert.deepStrictEqual(todoLogs.logs[101], {
-        bucketId: 101,
-        title: 'office',
-        lastTaskId: 2000,
-        tasks: {}
-      });
+      assert.deepStrictEqual(todoLogs.logs[101], bucket);
     });
   });
   describe('deleteBucket', function() {
     it('should delete the todo of given id', function() {
-      const todoLogs = new TodoLogs(
-        {
-          1: { bucketId: 1, tasks: {}, lastTaskId: 0, title: 'office' }
-        },
-        1
-      );
-      todoLogs.deleteBucket(1);
+      const bucket = new Bucket('office', 101, {}, 2000);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      todoLogs.deleteBucket(101);
       assert.deepStrictEqual(todoLogs.logs, {});
     });
   });
+
   describe('editBucketTitle', function() {
     it('should edit the title of given todo id', function() {
-      const todoLogs = TodoLogs.parse({
-        1: { bucketId: 1, tasks: {}, lastTaskId: 0, title: 'office' }
-      });
-      todoLogs.editBucketTitle(1, 'home');
-      assert.strictEqual(todoLogs.logs[1].title, 'home');
+      const bucket = new Bucket('office', 101, {}, 2000);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const expected = new Bucket('home', 101, {}, 2000);
+      todoLogs.editBucketTitle(101, 'home');
+      assert.deepStrictEqual(todoLogs.logs[101], expected);
+    });
+  });
+
+  describe('appendTask', function() {
+    it('should append new task to given bucket Id', function() {
+      const task = new Task('', 101, 2001, 'take books');
+      const bucket = new Bucket('office', 101, {}, 2000);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const expected = new Bucket('office', 101, { 2001: task }, 2001);
+      todoLogs.appendTask(101, 'take books');
+      assert.deepStrictEqual(todoLogs.logs[101], expected);
+    });
+  });
+
+  describe('deleteTask', function() {
+    it('should delete task of given bucket id and task id', function() {
+      const task = new Task('', 101, 2001, 'take books');
+      const bucket = new Bucket('office', 101, { 2001: task }, 2001);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const expected = new Bucket('office', 101, {}, 2001);
+      todoLogs.deleteTask(101, 2001);
+      assert.deepStrictEqual(todoLogs.logs[101], expected);
     });
   });
 });
