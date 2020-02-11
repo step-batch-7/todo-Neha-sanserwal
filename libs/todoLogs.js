@@ -36,7 +36,8 @@ class TodoLogs {
     writer(fileName, this.logs);
   }
 
-  append(bucket) {
+  append(title) {
+    const bucket = Bucket.parse(title, this.newBucketId);
     const bucketId = bucket.bucketId;
     this.logs[bucketId] = bucket;
   }

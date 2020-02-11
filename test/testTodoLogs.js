@@ -33,4 +33,17 @@ describe('TodoLogs', function() {
       sinon.assert.calledOnce(fakeWrite);
     });
   });
+
+  describe('append', function() {
+    it('should append the new todo of given title to todoLogs', function() {
+      const todoLogs = new TodoLogs({}, 100);
+      todoLogs.append('office');
+      assert.deepStrictEqual(todoLogs.logs[101], {
+        bucketId: 101,
+        title: 'office',
+        lastTaskId: 2000,
+        tasks: {}
+      });
+    });
+  });
 });

@@ -71,8 +71,7 @@ const saveBucket = function(req, res, next) {
   if (!reqBody.title) {
     next();
   }
-  const bucket = Bucket.parse(reqBody.title, TODO_LOGS.newBucketId);
-  TODO_LOGS.append(bucket);
+  TODO_LOGS.append(reqBody.title);
   TODO_LOGS.write(TODO_FILE, writeTo);
   const template = readTodoPage();
   res.end(template);
