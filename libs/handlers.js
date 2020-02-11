@@ -1,5 +1,6 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
-const { TodoLogs, Bucket } = require('./todo');
+const { Bucket } = require('./todo');
+const { TodoLogs } = require('./todoLogs');
 const {
   loadOlderTodoLogs,
   isFileNotAvailable,
