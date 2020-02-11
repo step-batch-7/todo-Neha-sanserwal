@@ -50,7 +50,7 @@ const loadStaticResponse = function(req, res, next) {
 };
 
 const readTodoPage = function() {
-  const allTodo = TODO_LOGS.logs;
+  const allTodo = TODO_LOGS.getAllLogs();
   return loadTodoPage(allTodo, loadFile);
 };
 

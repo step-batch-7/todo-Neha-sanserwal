@@ -89,4 +89,45 @@ describe('POST request', function() {
       .send('{ "bucketId": 1000, "taskId":"2000"}')
       .expect(200, done);
   });
+  it('should edit the task of give id', done => {
+    sinon.stub(TODO_LOGS, 'editTask');
+    request(handleRequest)
+      .post('/editTask')
+      .send('{ "bucketId": 1000, "taskId":"2000","text":"take books"}')
+      .expect(200, done);
+  });
+  it('should mark the task as done of give id', done => {
+    sinon.stub(TODO_LOGS, 'changeTaskStatus');
+    request(handleRequest)
+      .post('/setStatus')
+      .send('{ "bucketId": 1000, "taskId":"2000"}')
+      .expect(200, done);
+  });
+  describe('/search', function() {
+    it('should search title if the search-by option is Title', function(done) {
+      sinon.stub(TODO_LOGS, 'searchTitle').returns({});
+      request(handleRequest)
+        .post('/search')
+        .send('{ "text": "a", "searchBy":"Title"}')
+        .expect(200, done);
+    });
+    it('should search task if the search-by option is Task', function(done) {
+      sinon.stub(TODO_LOGS, 'searchTask').returns({});
+      request(handleRequest)
+        .post('/search')
+        .send('{ "text": "a", "searchBy":"Task"}')
+        .expect(200, done);
+    });
+    it('should search task if the search-by option is Task', function(done) {
+      sinon.stub(TODO_LOGS, 'getAllLogs').returns({});
+      request(handleRequest)
+        .post('/search')
+        .send('{ "text": ""}')
+        .expect(200)
+        .end(() => {
+          sinon.assert.calledOnce(TODO_LOGS.getAllLogs);
+          done();
+        });
+    });
+  });
 });

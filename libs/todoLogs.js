@@ -31,6 +31,9 @@ class TodoLogs {
     this.lastId = ++this.lastId;
     return this.lastId;
   }
+  getAllLogs() {
+    return this.logs;
+  }
 
   write(writer) {
     writer(this.logs);

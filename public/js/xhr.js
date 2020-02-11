@@ -64,5 +64,5 @@ const sendSearchRequest = function(event) {
   const text = event.target.value;
   const searchBy = document.querySelector('.searchBy').dataset.searchby;
   const data = { text, searchBy };
-  handleXhrRequest(`/search${searchBy}`, 'POST', data, changeMainPageContent);
+  handleXhrRequest('/search', 'POST', data, changeMainPageContent);
 };
