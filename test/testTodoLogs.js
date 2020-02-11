@@ -84,4 +84,29 @@ describe('TodoLogs', function() {
       assert.deepStrictEqual(todoLogs.logs[101], expected);
     });
   });
+
+  describe('editTask', function() {
+    it('should edit task of given bucket id and task id to given text', () => {
+      const task1 = new Task('', 101, 2001, 'take books');
+      const bucket = new Bucket('office', 101, { 2001: task1 }, 2001);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const task2 = new Task('', 101, 2001, 'take pens');
+      const expected = new Bucket('office', 101, { 2001: task2 }, 2001);
+      todoLogs.editTask(101, 2001, 'take pens');
+      assert.deepStrictEqual(todoLogs.logs[101], expected);
+    });
+  });
+
+  describe('changeStatus', function() {
+    it('should change task status of given bucket id and task id', () => {
+      const task1 = new Task('', 101, 2001, 'take books');
+      const bucket1 = new Bucket('office', 101, { 2001: task1 }, 2001);
+      const todoLogs = new TodoLogs({ 101: bucket1 }, 101);
+      const task2 = new Task('checked', 101, 2001, 'take books');
+      const bucket2 = new Bucket('office', 101, { 2001: task2 }, 2001);
+      const expected = new TodoLogs({ 101: bucket2 }, 101);
+      todoLogs.changeTaskStatus(101, 2001);
+      assert.deepStrictEqual(todoLogs, expected);
+    });
+  });
 });
