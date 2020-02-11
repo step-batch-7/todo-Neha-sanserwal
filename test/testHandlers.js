@@ -129,26 +129,76 @@ describe('POST request', function() {
         .expect(400, done);
     });
   });
-  it('should delete the task of give id', done => {
-    sinon.stub(TODO_LOGS, 'deleteTask');
-    request(handleRequest)
-      .post('/deleteTask')
-      .send('{ "bucketId": 1000, "taskId":"2000"}')
-      .expect(200, done);
+  describe('deleteTask', function() {
+    it('should delete the task of give id', done => {
+      sinon.stub(TODO_LOGS, 'deleteTask');
+      request(handleRequest)
+        .post('/deleteTask')
+        .send('{ "bucketId": 1000, "taskId":"2000"}')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/deleteTask')
+        .send('{}')
+        .expect(400, done);
+    });
+    it(' should give bad request when task is not given', function(done) {
+      request(handleRequest)
+        .post('/deleteTask')
+        .send('{"bucketId":101}')
+        .expect(400, done);
+    });
   });
-  it('should edit the task of give id', done => {
-    sinon.stub(TODO_LOGS, 'editTask');
-    request(handleRequest)
-      .post('/editTask')
-      .send('{ "bucketId": 1000, "taskId":"2000","text":"take books"}')
-      .expect(200, done);
+
+  describe('editTask', function() {
+    it('should edit the task of give id', done => {
+      sinon.stub(TODO_LOGS, 'editTask');
+      request(handleRequest)
+        .post('/editTask')
+        .send('{ "bucketId": 1000, "taskId":"2000","text":"take books"}')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId or text is not given', function(done) {
+      request(handleRequest)
+        .post('/editTask')
+        .send('{"taskId":123}')
+        .expect(400, done);
+    });
+    it(' should give bad request when taskId or text is not given', function(done) {
+      request(handleRequest)
+        .post('/editTask')
+        .send('{"bucketId":101}')
+        .expect(400, done);
+    });
+    it(' should give bad request when taskId or bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/editTask')
+        .send('{"text":""}')
+        .expect(400, done);
+    });
   });
-  it('should mark the task as done of give id', done => {
-    sinon.stub(TODO_LOGS, 'changeTaskStatus');
-    request(handleRequest)
-      .post('/setStatus')
-      .send('{ "bucketId": 1000, "taskId":"2000"}')
-      .expect(200, done);
+
+  describe('setStatus', function() {
+    it('should mark the task as done of give id', done => {
+      sinon.stub(TODO_LOGS, 'changeTaskStatus');
+      request(handleRequest)
+        .post('/setStatus')
+        .send('{ "bucketId": 1000, "taskId":"2000"}')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/setStatus')
+        .send('{}')
+        .expect(400, done);
+    });
+    it(' should give bad request when task is not given', function(done) {
+      request(handleRequest)
+        .post('/setStatus')
+        .send('{"bucketId":101}')
+        .expect(400, done);
+    });
   });
   describe('/search', function() {
     it('should search title if the search-by option is Title', function(done) {

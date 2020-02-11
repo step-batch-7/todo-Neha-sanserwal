@@ -84,19 +84,22 @@ const deleteBucket = function(req, res, next) {
 };
 
 const editBucketTitle = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.bucketId) {
+  const { bucketId, title } = JSON.parse(req.body);
+  if (!bucketId || !title) {
     next();
   }
-  TODO_LOGS.editBucketTitle(reqBody.bucketId, reqBody.title);
+  TODO_LOGS.editBucketTitle(bucketId, title);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 //____________________________task handlers_________________________
 
-const handleTaskStatus = function(req, res) {
+const handleTaskStatus = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
+  if (!reqBody.bucketId || !reqBody.taskId) {
+    next();
+  }
   TODO_LOGS.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
@@ -112,15 +115,21 @@ const saveNewTask = function(req, res, next) {
   res.end(readTodoPage());
 };
 
-const deleteTask = function(req, res) {
+const deleteTask = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
+  if (!reqBody.bucketId || !reqBody.taskId) {
+    next();
+  }
   TODO_LOGS.deleteTask(reqBody.bucketId, reqBody.taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
-const editTask = function(req, res) {
+const editTask = function(req, res, next) {
   const { bucketId, taskId, text } = JSON.parse(req.body);
+  if (!bucketId || !taskId || !text) {
+    next();
+  }
   TODO_LOGS.editTask(bucketId, taskId, text);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
