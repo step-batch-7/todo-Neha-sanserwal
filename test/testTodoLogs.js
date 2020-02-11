@@ -46,4 +46,25 @@ describe('TodoLogs', function() {
       });
     });
   });
+  describe('deleteBucket', function() {
+    it('should delete the todo of given id', function() {
+      const todoLogs = new TodoLogs(
+        {
+          1: { bucketId: 1, tasks: {}, lastTaskId: 0, title: 'office' }
+        },
+        1
+      );
+      todoLogs.deleteBucket(1);
+      assert.deepStrictEqual(todoLogs.logs, {});
+    });
+  });
+  describe('editBucketTitle', function() {
+    it('should edit the title of given todo id', function() {
+      const todoLogs = TodoLogs.parse({
+        1: { bucketId: 1, tasks: {}, lastTaskId: 0, title: 'office' }
+      });
+      todoLogs.editBucketTitle(1, 'home');
+      assert.strictEqual(todoLogs.logs[1].title, 'home');
+    });
+  });
 });
