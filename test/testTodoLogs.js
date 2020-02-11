@@ -18,6 +18,11 @@ describe('TodoLogs', function() {
       );
       assert.deepStrictEqual(TodoLogs.parse(logs), todoLogs);
     });
+    it('should parse all the todo inside the logs with empty todo', function() {
+      const logs = {};
+      const todoLogs = new TodoLogs({}, 1000);
+      assert.deepStrictEqual(TodoLogs.parse(logs), todoLogs);
+    });
   });
 
   describe('newBucketId', function() {
@@ -107,6 +112,51 @@ describe('TodoLogs', function() {
       const expected = new TodoLogs({ 101: bucket2 }, 101);
       todoLogs.changeTaskStatus(101, 2001);
       assert.deepStrictEqual(todoLogs, expected);
+    });
+  });
+
+  describe('searchTitle', function() {
+    it('should give todo of matching title', () => {
+      const bucket = new Bucket('office', 101, {}, 2000);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const expected = {
+        101: { title: 'office', bucketId: 101, tasks: {}, lastTaskId: 2000 }
+      };
+      assert.deepStrictEqual(todoLogs.searchTitle('off'), expected);
+    });
+    it('should not give todo of unmatched title', () => {
+      const bucket = new Bucket('office', 101, {}, 2000);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      assert.deepStrictEqual(todoLogs.searchTitle('cat'), {});
+    });
+  });
+  describe('searchTask', function() {
+    it('should give todo of tasks of matching name text', () => {
+      const task = new Task('', 101, 2001, 'take books');
+      const bucket = new Bucket('office', 101, { 2001: task }, 2001);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      const expected = {
+        101: {
+          title: 'office',
+          bucketId: 101,
+          tasks: {
+            2001: {
+              status: '',
+              bucketId: 101,
+              taskId: 2001,
+              text: 'take books'
+            }
+          },
+          lastTaskId: 2001
+        }
+      };
+      assert.deepStrictEqual(todoLogs.searchTask('take'), expected);
+    });
+    it('should not give todo of unmatched task', () => {
+      const task = new Task('', 101, 2001, 'take books');
+      const bucket = new Bucket('office', 101, { 2001: task }, 2001);
+      const todoLogs = new TodoLogs({ 101: bucket }, 101);
+      assert.deepStrictEqual(todoLogs.searchTask('pens'), {});
     });
   });
 });
