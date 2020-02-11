@@ -104,7 +104,7 @@ const handleTaskStatus = function(req, res) {
 
 const saveNewTask = function(req, res, next) {
   const reqBody = JSON.parse(req.body);
-  if (!(reqBody.bucketId && reqBody.task)) {
+  if (!reqBody.bucketId || !reqBody.task) {
     next();
   }
   TODO_LOGS.appendTask(reqBody.bucketId, reqBody.task);

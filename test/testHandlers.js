@@ -13,11 +13,19 @@ describe('GET request', function() {
       return '{}';
     });
   });
-  it('should serveTodo when the route is /index.html', function(done) {
-    request(handleRequest)
-      .get('/index.html')
-      .expect('Content-type', 'text/html')
-      .expect(200, done);
+  describe('homePage', function() {
+    it('should serveTodo when the route is /index.html', function(done) {
+      request(handleRequest)
+        .get('/index.html')
+        .expect('Content-type', 'text/html')
+        .expect(200, done);
+    });
+    it('should serveTodo when the route is /', done => {
+      request(handleRequest)
+        .get('/')
+        .expect('Content-type', 'text/html')
+        .expect(200, done);
+    });
   });
   it('should load css when browser ask for it', function(done) {
     request(handleRequest)
@@ -54,33 +62,72 @@ describe('file not found', function() {
 });
 
 describe('POST request', function() {
-  it('should post the todo', function(done) {
-    sinon.stub(TODO_LOGS, 'append');
-    request(handleRequest)
-      .post('/saveTodo')
-      .send('{ "title": "class" }')
-      .expect(200, done);
+  describe('saveTodo', function() {
+    it('should post the todo', function(done) {
+      sinon.stub(TODO_LOGS, 'append');
+      request(handleRequest)
+        .post('/saveTodo')
+        .send('{ "title": "class" }')
+        .expect(200, done);
+    });
+    it('should give bad request when title is not given', function(done) {
+      request(handleRequest)
+        .post('/saveTodo')
+        .send('{}')
+        .expect(400, done);
+    });
   });
-  it(' should delete a todo', function(done) {
-    sinon.stub(TODO_LOGS, 'deleteBucket');
-    request(handleRequest)
-      .post('/deleteBucket')
-      .send('{"bucketId":1000}')
-      .expect(200, done);
+
+  describe('deleteBucket', function() {
+    it(' should delete a todo', function(done) {
+      sinon.stub(TODO_LOGS, 'deleteBucket');
+      request(handleRequest)
+        .post('/deleteBucket')
+        .send('{"bucketId":1000}')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/deleteBucket')
+        .send('{}')
+        .expect(400, done);
+    });
   });
-  it('should edit the title of given todoId', done => {
-    sinon.stub(TODO_LOGS, 'editBucketTitle');
-    request(handleRequest)
-      .post('/editTitle')
-      .send('{ "bucketId": 1000, "title": "office" }')
-      .expect(200, done);
+  describe('editTitle', function() {
+    it('should edit the title of given todoId', done => {
+      sinon.stub(TODO_LOGS, 'editBucketTitle');
+      request(handleRequest)
+        .post('/editTitle')
+        .send('{ "bucketId": 1000, "title": "office" }')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/editTitle')
+        .send('{}')
+        .expect(400, done);
+    });
   });
-  it('should save the given task', done => {
-    sinon.stub(TODO_LOGS, 'appendTask');
-    request(handleRequest)
-      .post('/saveNewTask')
-      .send('{ "bucketId": 1000, "task":"hello"}')
-      .expect(200, done);
+  describe('saveNewTask', function() {
+    it('should save the given task', done => {
+      sinon.stub(TODO_LOGS, 'appendTask');
+      request(handleRequest)
+        .post('/saveNewTask')
+        .send('{ "bucketId": 1000, "task":"hello"}')
+        .expect(200, done);
+    });
+    it(' should give bad request when bucketId is not given', function(done) {
+      request(handleRequest)
+        .post('/saveNewTask')
+        .send('{}')
+        .expect(400, done);
+    });
+    it(' should give bad request when task is not given', function(done) {
+      request(handleRequest)
+        .post('/saveNewTask')
+        .send('{"bucketId":101}')
+        .expect(400, done);
+    });
   });
   it('should delete the task of give id', done => {
     sinon.stub(TODO_LOGS, 'deleteTask');
