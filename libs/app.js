@@ -1,5 +1,6 @@
 class App {
-  constructor() {
+  constructor(path) {
+    this.filePath = path;
     this.routes = [];
   }
   get(path, handler) {
@@ -18,11 +19,11 @@ class App {
     const matchingHandlers = this.routes.filter(route =>
       matchRoute(route, req)
     );
-    const next = function() {
+    const next = function(path) {
       const router = matchingHandlers.shift();
-      router && router.handler(req, res, next);
+      router && router.handler(req, res, path, next);
     };
-    next();
+    next(this.filePath);
   }
 }
 

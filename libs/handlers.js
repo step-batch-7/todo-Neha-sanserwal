@@ -8,7 +8,7 @@ const {
 
 const STATIC_DIR = `${__dirname}/../public`;
 
-const readBody = function(req, res, next) {
+const readBody = function(req, res, path, next) {
   let text = '';
   req.on('data', chunk => {
     text += chunk;
@@ -16,16 +16,16 @@ const readBody = function(req, res, next) {
 
   req.on('end', () => {
     req.body = text;
-    next();
+    next(path);
   });
 };
 
-const parseBody = function(req, res, next) {
+const parseBody = function(req, res, path, next) {
   const { headers } = req;
   if (headers['content-type'] === 'application/json') {
     req.body = JSON.parse(req.body);
   }
-  return next();
+  return next(path);
 };
 
 const getCompleteUrl = function(url) {
@@ -40,21 +40,21 @@ const getFileExtension = function(fileName) {
   return fileExt;
 };
 
-const generateGetResponse = function(url, res, body) {
+const generateGetResponse = function(url, res, path, body) {
   const fileExt = getFileExtension(url);
   res.setHeader('Content-Type', `text/${fileExt}`);
   res.write(body);
   res.end();
 };
 
-const loadStaticResponse = function(req, res, next) {
+const loadStaticResponse = function(req, res, path, next) {
   const completeUrl = getCompleteUrl(req.url);
   if (isFileNotAvailable(completeUrl)) {
-    next();
+    next(path);
     return;
   }
   const body = loadFile(completeUrl);
-  generateGetResponse(completeUrl, res, body);
+  generateGetResponse(completeUrl, res, path, body);
 };
 
 const readTodoPage = function() {
@@ -70,10 +70,10 @@ const serveTodoPage = function(req, res) {
 
 //____________________________bucket handlers_________________________
 
-const saveBucket = function(req, res, next) {
+const saveBucket = function(req, res, path, next) {
   const { title } = req.body;
   if (!title) {
-    next();
+    next(path);
   }
   TODO_LOGS.append(title);
   TODO_LOGS.write(writeTo);
@@ -81,20 +81,20 @@ const saveBucket = function(req, res, next) {
   res.end(template);
 };
 
-const deleteBucket = function(req, res, next) {
+const deleteBucket = function(req, res, path, next) {
   const { bucketId } = req.body;
   if (!bucketId) {
-    next();
+    next(path);
   }
   TODO_LOGS.deleteBucket(bucketId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
-const editBucketTitle = function(req, res, next) {
+const editBucketTitle = function(req, res, path, next) {
   const { bucketId, title } = req.body;
   if (!bucketId || !title) {
-    next();
+    next(path);
   }
   TODO_LOGS.editBucketTitle(bucketId, title);
   TODO_LOGS.write(writeTo);
@@ -103,40 +103,40 @@ const editBucketTitle = function(req, res, next) {
 
 //____________________________task handlers_________________________
 
-const handleTaskStatus = function(req, res, next) {
+const handleTaskStatus = function(req, res, path, next) {
   const { bucketId, taskId } = req.body;
   if (!bucketId || !taskId) {
-    next();
+    next(path);
   }
   TODO_LOGS.changeTaskStatus(bucketId, taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
-const saveNewTask = function(req, res, next) {
+const saveNewTask = function(req, res, path, next) {
   const { bucketId, task } = req.body;
   if (!bucketId || !task) {
-    next();
+    next(path);
   }
   TODO_LOGS.appendTask(bucketId, task);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
-const deleteTask = function(req, res, next) {
+const deleteTask = function(req, res, path, next) {
   const { bucketId, taskId } = req.body;
   if (!bucketId || !taskId) {
-    next();
+    next(path);
   }
   TODO_LOGS.deleteTask(bucketId, taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
-const editTask = function(req, res, next) {
+const editTask = function(req, res, path, next) {
   const { bucketId, taskId, text } = req.body;
   if (!bucketId || !taskId || !text) {
-    next();
+    next(path);
   }
   TODO_LOGS.editTask(bucketId, taskId, text);
   TODO_LOGS.write(writeTo);

@@ -1,23 +1,32 @@
 const handlers = require('./handlers');
 const { App } = require('./app');
-const app = new App();
 
-app.use(handlers.readBody);
-app.use(handlers.parseBody);
-app.post('/saveTodo', handlers.saveBucket);
-app.post('/setStatus', handlers.handleTaskStatus);
-app.post('/deleteBucket', handlers.deleteBucket);
-app.post('/deleteTask', handlers.deleteTask);
-app.post('/saveNewTask', handlers.saveNewTask);
-app.post('/editTitle', handlers.editBucketTitle);
-app.post('/editTask', handlers.editTask);
-app.post('/search', handlers.search);
-app.get('/todo', handlers.serveTodoPage);
-app.get('/', handlers.loadStaticResponse);
-app.get('', handlers.notFound);
-app.use(handlers.methodNotAllowed);
+const attachMiddlerWare = function(app) {
+  app.use(handlers.readBody);
+  app.use(handlers.parseBody);
+};
+const attachPostHandlers = function(app) {
+  app.post('/saveTodo', handlers.saveBucket);
+  app.post('/setStatus', handlers.handleTaskStatus);
+  app.post('/deleteBucket', handlers.deleteBucket);
+  app.post('/deleteTask', handlers.deleteTask);
+  app.post('/saveNewTask', handlers.saveNewTask);
+  app.post('/editTitle', handlers.editBucketTitle);
+  app.post('/editTask', handlers.editTask);
+  app.post('/search', handlers.search);
+};
+const attachGetHandlers = function(app) {
+  app.get('/todo', handlers.serveTodoPage);
+  app.get('/', handlers.loadStaticResponse);
+  app.get('', handlers.notFound);
+};
 
 const handleRequest = function(req, res) {
+  const app = new App(this['data_store']);
+  attachMiddlerWare(app);
+  attachPostHandlers(app);
+  attachGetHandlers(app);
+  app.use(handlers.methodNotAllowed);
   app.serve(req, res);
 };
 
