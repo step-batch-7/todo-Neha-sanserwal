@@ -50,4 +50,4 @@
 --DONE-- 8 extract handleXhr request.
 --Done-- * extract class bucket to another file.
 --DONE-- * write tests for todoLogs.
--- * write tests for post method handlers.
+--DONE-- * write tests for post method handlers.
