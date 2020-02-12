@@ -166,6 +166,17 @@ const search = function(req, res) {
   const cards = readCards(searchedLogs, loadFile);
   res.end(cards);
 };
+
+//________________________________auth__________________________
+
+const registerUser = function(req, res, path, next) {
+  res.end();
+};
+
+const loginUser = function(req, res) {
+  res.end;
+};
+
 module.exports = {
   search,
   parseBody,
@@ -180,5 +191,7 @@ module.exports = {
   methodNotAllowed,
   editBucketTitle,
   handleTaskStatus,
-  serveTodoPage
+  serveTodoPage,
+  registerUser,
+  loginUser
 };

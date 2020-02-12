@@ -3,10 +3,10 @@ const loadSignUpPage = function() {
   todoPage.innerHTML = ` <div class="loginPage">
         <h1> Sign Up </h1>
         <div class="loginContainer">
-          <input type="text" placeholder="username" />
-          <input type="password" placeholder="password" />
+          <input type="text" placeholder="username" name="username"/>
+          <input type="password" placeholder="password" name="password"/>
           <input type="password" placeholder="re-enter password" />
-          <button>SIGN UP</button>
+          <button onclick="sendAuthDetails('/signup')">SIGN UP</button>
           <div>Already have an account <a href="#" onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
       </div>`;
@@ -17,13 +17,35 @@ const loadLoginPage = function() {
   todoPage.innerHTML = `<div class="loginPage">
         <h1>Log In</h1>
         <div class="loginContainer">
-          <input type="text" placeholder="username" />
-          <input type="password" placeholder="password" />
-          <button onclick="serveTodo(event)">SIGN IN</button>
+          <input type="text" placeholder="username" name="username"/>
+          <input type="password" placeholder="password" name="password" />
+          <button onclick="sendAuthDetails('/login')">SIGN IN</button>
           <div>
             Don't have account
             <a href="#" onclick="loadSignUpPage()">Sign Up</a> here
           </div>
+        </div>
+      </div>`;
+};
+
+const loadTodoNav = function() {
+  const nav = document.querySelector('.headers');
+  nav.innerHTML = `<div class="heading">
+        <h1>POST IT</h1>
+      </div>
+      <div class="searchBar">
+        <input
+          required
+          type="text"
+          value=""
+          onkeyup="sendSearchRequest(event)"
+          placeholder="&#xF002; Search"
+        />
+        <div class="toggle">
+          <input type="checkbox" id="check" />
+          <label for="check" onclick="changeSearchBy()">
+            <div class="searchBy" data-searchby="Title"></div>
+          </label>
         </div>
       </div>`;
 };
@@ -51,4 +73,8 @@ const showNewTaskForm = function(event) {
     return;
   }
   taskInput.style.display = 'flex';
+};
+
+const calledAfterAuth = function() {
+  loadLoginPage();
 };

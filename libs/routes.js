@@ -6,6 +6,8 @@ const attachMiddlerWare = function(app) {
   app.use(handlers.parseBody);
 };
 const attachPostHandlers = function(app) {
+  app.post('/login', handlers.loginUser);
+  app.post('/signup', handlers.registerUser);
   app.post('/saveTodo', handlers.saveBucket);
   app.post('/setStatus', handlers.handleTaskStatus);
   app.post('/deleteBucket', handlers.deleteBucket);
