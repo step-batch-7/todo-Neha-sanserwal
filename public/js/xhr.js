@@ -4,10 +4,16 @@ const handleXhrRequest = function(url, method, data, callback) {
     callback(this.status, this.responseText, 'todoPage');
   };
   req.open(method, url);
+  req.setRequestHeader('content-type', 'application/json');
   req.send(JSON.stringify(data));
 };
 const serveTodo = function() {
-  handleXhrRequest('/index.html', 'GET', {}, changeMainPageContent);
+  const req = new XMLHttpRequest();
+  req.onload = function() {
+    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  };
+  req.open('GET', '/todo');
+  req.send();
 };
 const sendSaveRequest = function() {
   const title = document.getElementById('title').value;

@@ -12,6 +12,9 @@ class App {
     this.routes.push({ handler: middleware });
   }
   serve(req, res) {
+    // eslint-disable-next-line no-console
+    console.log('url:', req.url, '  ', 'method:', req.method);
+
     const matchingHandlers = this.routes.filter(route =>
       matchRoute(route, req)
     );

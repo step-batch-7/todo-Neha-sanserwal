@@ -14,15 +14,15 @@ describe('GET request', function() {
     });
   });
   describe('homePage', function() {
-    it('should serveTodo when the route is /index.html', function(done) {
+    it('should serveTodo when the route is /', function(done) {
       request(handleRequest)
-        .get('/index.html')
+        .get('/')
         .expect('Content-type', 'text/html')
         .expect(200, done);
     });
-    it('should serveTodo when the route is /', done => {
+    it('should serveTodo when the route is /todo', done => {
       request(handleRequest)
-        .get('/')
+        .get('/todo')
         .expect('Content-type', 'text/html')
         .expect(200, done);
     });
@@ -67,13 +67,15 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'append');
       request(handleRequest)
         .post('/saveTodo')
-        .send('{ "title": "class" }')
+        .send({ title: 'class' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it('should give bad request when title is not given', function(done) {
       request(handleRequest)
         .post('/saveTodo')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -83,13 +85,15 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'deleteBucket');
       request(handleRequest)
         .post('/deleteBucket')
-        .send('{"bucketId":1000}')
+        .send({ bucketId: 1000 })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
       request(handleRequest)
         .post('/deleteBucket')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -98,13 +102,15 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'editBucketTitle');
       request(handleRequest)
         .post('/editTitle')
-        .send('{ "bucketId": 1000, "title": "office" }')
+        .send({ bucketId: 1000, title: 'office' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
       request(handleRequest)
         .post('/editTitle')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -113,19 +119,22 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'appendTask');
       request(handleRequest)
         .post('/saveNewTask')
-        .send('{ "bucketId": 1000, "task":"hello"}')
+        .send({ bucketId: 1000, task: 'hello' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
       request(handleRequest)
         .post('/saveNewTask')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
       request(handleRequest)
         .post('/saveNewTask')
-        .send('{"bucketId":101}')
+        .send({ bucketId: 101 })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -134,19 +143,22 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'deleteTask');
       request(handleRequest)
         .post('/deleteTask')
-        .send('{ "bucketId": 1000, "taskId":"2000"}')
+        .send({ bucketId: 1000, taskId: '2000' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
       request(handleRequest)
         .post('/deleteTask')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
       request(handleRequest)
         .post('/deleteTask')
-        .send('{"bucketId":101}')
+        .send({ bucketId: 101 })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -156,25 +168,29 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'editTask');
       request(handleRequest)
         .post('/editTask')
-        .send('{ "bucketId": 1000, "taskId":"2000","text":"take books"}')
+        .send({ bucketId: 1000, taskId: '2000', text: 'take books' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId or text is not given', function(done) {
       request(handleRequest)
         .post('/editTask')
-        .send('{"taskId":123}')
+        .send({ taskId: 123 })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when taskId or text is not given', function(done) {
       request(handleRequest)
         .post('/editTask')
-        .send('{"bucketId":101}')
+        .send({ bucketId: 101 })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when taskId or bucketId is not given', function(done) {
       request(handleRequest)
         .post('/editTask')
-        .send('{"text":""}')
+        .send({ text: '' })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -184,19 +200,22 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'changeTaskStatus');
       request(handleRequest)
         .post('/setStatus')
-        .send('{ "bucketId": 1000, "taskId":"2000"}')
+        .send({ bucketId: 1000, taskId: '2000' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
       request(handleRequest)
         .post('/setStatus')
-        .send('{}')
+        .send({})
+        .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
       request(handleRequest)
         .post('/setStatus')
-        .send('{"bucketId":101}')
+        .send({ bucketId: 101 })
+        .set('accept', 'application/json')
         .expect(400, done);
     });
   });
@@ -205,21 +224,24 @@ describe('POST request', function() {
       sinon.stub(TODO_LOGS, 'searchTitle').returns({});
       request(handleRequest)
         .post('/search')
-        .send('{ "text": "a", "searchBy":"Title"}')
+        .send({ text: 'a', searchBy: 'Title' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it('should search task if the search-by option is Task', function(done) {
       sinon.stub(TODO_LOGS, 'searchTask').returns({});
       request(handleRequest)
         .post('/search')
-        .send('{ "text": "a", "searchBy":"Task"}')
+        .send({ text: 'a', searchBy: 'Task' })
+        .set('accept', 'application/json')
         .expect(200, done);
     });
     it('should search task if the search-by option is Task', function(done) {
       sinon.stub(TODO_LOGS, 'getAllLogs').returns({});
       request(handleRequest)
         .post('/search')
-        .send('{ "text": ""}')
+        .send({ text: '' })
+        .set('accept', 'application/json')
         .expect(200)
         .end(() => {
           sinon.assert.calledOnce(TODO_LOGS.getAllLogs);

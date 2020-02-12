@@ -20,6 +20,14 @@ const readBody = function(req, res, next) {
   });
 };
 
+const parseBody = function(req, res, next) {
+  const { headers } = req;
+  if (headers['content-type'] === 'application/json') {
+    req.body = JSON.parse(req.body);
+  }
+  return next();
+};
+
 const getCompleteUrl = function(url) {
   if (url === '/') {
     return `${STATIC_DIR}/index.html`;
@@ -63,28 +71,28 @@ const serveTodoPage = function(req, res) {
 //____________________________bucket handlers_________________________
 
 const saveBucket = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.title) {
+  const { title } = req.body;
+  if (!title) {
     next();
   }
-  TODO_LOGS.append(reqBody.title);
+  TODO_LOGS.append(title);
   TODO_LOGS.write(writeTo);
   const template = readTodoPage();
   res.end(template);
 };
 
 const deleteBucket = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.bucketId) {
+  const { bucketId } = req.body;
+  if (!bucketId) {
     next();
   }
-  TODO_LOGS.deleteBucket(reqBody.bucketId);
+  TODO_LOGS.deleteBucket(bucketId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const editBucketTitle = function(req, res, next) {
-  const { bucketId, title } = JSON.parse(req.body);
+  const { bucketId, title } = req.body;
   if (!bucketId || !title) {
     next();
   }
@@ -96,37 +104,37 @@ const editBucketTitle = function(req, res, next) {
 //____________________________task handlers_________________________
 
 const handleTaskStatus = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.bucketId || !reqBody.taskId) {
+  const { bucketId, taskId } = req.body;
+  if (!bucketId || !taskId) {
     next();
   }
-  TODO_LOGS.changeTaskStatus(reqBody.bucketId, reqBody.taskId);
+  TODO_LOGS.changeTaskStatus(bucketId, taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const saveNewTask = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.bucketId || !reqBody.task) {
+  const { bucketId, task } = req.body;
+  if (!bucketId || !task) {
     next();
   }
-  TODO_LOGS.appendTask(reqBody.bucketId, reqBody.task);
+  TODO_LOGS.appendTask(bucketId, task);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const deleteTask = function(req, res, next) {
-  const reqBody = JSON.parse(req.body);
-  if (!reqBody.bucketId || !reqBody.taskId) {
+  const { bucketId, taskId } = req.body;
+  if (!bucketId || !taskId) {
     next();
   }
-  TODO_LOGS.deleteTask(reqBody.bucketId, reqBody.taskId);
+  TODO_LOGS.deleteTask(bucketId, taskId);
   TODO_LOGS.write(writeTo);
   res.end(readTodoPage());
 };
 
 const editTask = function(req, res, next) {
-  const { bucketId, taskId, text } = JSON.parse(req.body);
+  const { bucketId, taskId, text } = req.body;
   if (!bucketId || !taskId || !text) {
     next();
   }
@@ -145,21 +153,22 @@ const methodNotAllowed = function(req, res) {
 };
 
 const search = function(req, res) {
-  const reqBody = JSON.parse(req.body);
-  if (reqBody.text === '') {
+  const { text, searchBy } = req.body;
+  if (text === '') {
     res.end(readTodoPage());
   }
-  if (reqBody.searchBy === 'Title') {
-    const searchedLogs = TODO_LOGS.searchTitle(reqBody.text);
+  if (searchBy === 'Title') {
+    const searchedLogs = TODO_LOGS.searchTitle(text);
     const cards = readCards(searchedLogs, loadFile);
     res.end(cards);
   }
-  const searchedLogs = TODO_LOGS.searchTask(reqBody.text);
+  const searchedLogs = TODO_LOGS.searchTask(text);
   const cards = readCards(searchedLogs, loadFile);
   res.end(cards);
 };
 module.exports = {
   search,
+  parseBody,
   readBody,
   loadStaticResponse,
   saveBucket,
