@@ -20,15 +20,16 @@ const isFileNotAvailable = function(filePath) {
 
 const loadOlderTodoLogs = function(todoFile) {
   if (!fs.existsSync(todoFile)) {
-    writeTo(todoFile, {});
+    writeTo({});
   }
-  const todo = loadFile(todoFile);
+  const todo = loadFile(todoFile, 'utf8');
   return JSON.parse(todo);
 };
 
 const TODO_LOGS = TodoLogs.parse(loadOlderTodoLogs(TODO_FILE));
 
 module.exports = {
+  loadOlderTodoLogs,
   TODO_LOGS,
   isFileNotAvailable,
   writeTo,

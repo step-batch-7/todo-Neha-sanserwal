@@ -16,11 +16,8 @@ class App {
       matchRoute(route, req)
     );
     const next = function() {
-      if (!matchingHandlers.length) {
-        return;
-      }
       const router = matchingHandlers.shift();
-      router.handler(req, res, next);
+      router && router.handler(req, res, next);
     };
     next();
   }
