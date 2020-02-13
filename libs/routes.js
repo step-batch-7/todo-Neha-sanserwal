@@ -5,6 +5,7 @@ const attachMiddlerWare = function(app) {
   app.use(handlers.readBody);
   app.use(handlers.parseBody);
   app.use(handlers.parseCookie);
+  app.use(handlers.authenticateReq);
 };
 
 const attachAuthHandlers = function(app) {
