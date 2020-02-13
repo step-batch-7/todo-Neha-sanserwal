@@ -53,5 +53,6 @@
 --DONE-- * write tests for post method handlers.
 --DONE-- * create login and signup template.
 --DONE-- * added handlers of login and signup request.
-* add behavior to signup handler so that it can save user details and create new todo file in data to store
-  todo of that user.
+--DONE-- * add behavior to signup handler so that it can save user details and log in user.
+* create new todo file in data to store todo of that user after login if file is not present.
+* set cookie for the particular user

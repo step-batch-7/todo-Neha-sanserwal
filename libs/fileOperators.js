@@ -24,7 +24,7 @@ const isFileNotAvailable = function(filePath) {
 
 const loadOlderTodoLogs = function(todoFile) {
   if (!fs.existsSync(todoFile)) {
-    writeTo({});
+    writeToFile(todoFile, {});
   }
   const todo = loadFile(todoFile, 'utf8');
   return JSON.parse(todo);

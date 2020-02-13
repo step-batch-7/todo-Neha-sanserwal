@@ -5,6 +5,7 @@ const handleXhrRequest = function(url, data, callback) {
   };
   req.open('POST', url);
   req.setRequestHeader('content-type', 'application/json');
+  req.setRequestHeader('set-cookie', document.cookie);
   req.send(JSON.stringify(data));
 };
 

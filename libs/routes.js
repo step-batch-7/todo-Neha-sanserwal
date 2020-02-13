@@ -4,6 +4,7 @@ const { App } = require('./app');
 const attachMiddlerWare = function(app) {
   app.use(handlers.readBody);
   app.use(handlers.parseBody);
+  app.use(handlers.parseCookie);
 };
 
 const attachAuthHandlers = function(app) {

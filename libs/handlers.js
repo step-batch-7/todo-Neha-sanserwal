@@ -1,14 +1,14 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const {
+  loadOlderTodoLogs,
   isFileNotAvailable,
   writeTo,
   writeToFile,
   loadFile,
   TODO_LOGS
 } = require('./fileOperators');
-
+const { TodoLogs } = require('./todoLogs');
 const STATIC_DIR = `${__dirname}/../public`;
-const AUTH_DIR = `${__dirname}/../docs/auth.json`;
 const readBody = function(req, res, path, next) {
   let text = '';
   req.on('data', chunk => {
@@ -25,6 +25,14 @@ const parseBody = function(req, res, path, next) {
   const { headers } = req;
   if (headers['content-type'] === 'application/json') {
     req.body = JSON.parse(req.body);
+  }
+  return next(path);
+};
+
+const parseCookie = function(req, res, path, next) {
+  const cookie = req.headers.cookie;
+  if (cookie) {
+    req.username = cookie.split('=').pop();
   }
   return next(path);
 };
@@ -58,13 +66,18 @@ const loadStaticResponse = function(req, res, path, next) {
   generateGetResponse(completeUrl, res, path, body);
 };
 
-const readTodoPage = function() {
-  const allTodo = TODO_LOGS.getAllLogs();
+const readTodoPage = function(todoLogs) {
+  const allTodo = todoLogs.getAllLogs();
   return loadTodoPage(allTodo, loadFile);
 };
-
-const serveTodoPage = function(req, res) {
-  const todoPage = readTodoPage();
+const getTodoLogs = function(todoFile) {
+  const logs = loadOlderTodoLogs(todoFile);
+  return TodoLogs.parse(logs);
+};
+const serveTodoPage = function(req, res, path) {
+  const todoFile = `${path}${req.username}.json`;
+  const todoLogs = getTodoLogs(todoFile);
+  const todoPage = readTodoPage(todoLogs);
   res.setHeader('content-type', 'text/html');
   res.end(todoPage);
 };
@@ -76,9 +89,11 @@ const saveBucket = function(req, res, path, next) {
   if (!title) {
     next(path);
   }
-  TODO_LOGS.append(title);
-  TODO_LOGS.write(writeTo);
-  const template = readTodoPage();
+  const todoFile = `${path}${req.username}.json`;
+  const todoLogs = getTodoLogs(todoFile);
+  todoLogs.append(title);
+  const template = readTodoPage(todoLogs);
+  todoLogs.write(todoFile, writeToFile);
   res.end(template);
 };
 
@@ -87,8 +102,10 @@ const deleteBucket = function(req, res, path, next) {
   if (!bucketId) {
     next(path);
   }
-  TODO_LOGS.deleteBucket(bucketId);
-  TODO_LOGS.write(writeTo);
+  const todoFile = `${path}${req.username}.json`;
+  const todoLogs = getTodoLogs(todoFile);
+  todoLogs.deleteBucket(bucketId);
+  todoLogs.write(todoFile, writeTo);
   res.end(readTodoPage());
 };
 
@@ -97,8 +114,10 @@ const editBucketTitle = function(req, res, path, next) {
   if (!bucketId || !title) {
     next(path);
   }
-  TODO_LOGS.editBucketTitle(bucketId, title);
-  TODO_LOGS.write(writeTo);
+  const todoFile = `${path}${req.username}.json`;
+  const todoLogs = getTodoLogs(todoFile);
+  todoLogs.editBucketTitle(bucketId, title);
+  todoLogs.write(todoFile, writeTo);
   res.end(readTodoPage());
 };
 
@@ -175,13 +194,13 @@ const registerUser = function(req, res, path, next) {
   if (!username || !password) {
     return next(path);
   }
-  const authentications = JSON.parse(loadFile(AUTH_DIR, 'utf8'));
+  const authentications = JSON.parse(loadFile(`${path}auth.json`, 'utf8'));
   if (username in authentications) {
     res.statusCode = 400;
     return res.end('userNameAlreadyExists');
   }
   authentications[username] = { username, password };
-  writeToFile(AUTH_DIR, authentications);
+  writeToFile(`${path}auth.json`, authentications);
   next(path);
 };
 
@@ -190,19 +209,23 @@ const loginUser = function(req, res, path, next) {
   if (!username || !password) {
     return next(path);
   }
-  const authentications = JSON.parse(loadFile(AUTH_DIR, 'utf8'));
+  const authentications = JSON.parse(loadFile(`${path}auth.json`, 'utf8'));
   if (!(username in authentications)) {
     res.statusCode = 400;
     return res.end('invalidUserName');
   }
+  res.setHeader('set-cookie', `user=${username}`);
   res.end();
 };
 
 module.exports = {
-  search,
   parseBody,
   readBody,
+  parseCookie,
+  registerUser,
+  loginUser,
   loadStaticResponse,
+  serveTodoPage,
   saveBucket,
   saveNewTask,
   deleteBucket,
@@ -212,7 +235,5 @@ module.exports = {
   methodNotAllowed,
   editBucketTitle,
   handleTaskStatus,
-  serveTodoPage,
-  registerUser,
-  loginUser
+  search
 };

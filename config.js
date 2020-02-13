@@ -1,3 +1,3 @@
 module.exports = {
-  data_store: `${__dirname}/docs/todos.json`
+  data_store: `${__dirname}/docs/`
 };
