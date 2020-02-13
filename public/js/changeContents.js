@@ -75,6 +75,9 @@ const showNewTaskForm = function(event) {
   taskInput.style.display = 'flex';
 };
 
-const calledAfterAuth = function() {
-  loadLoginPage();
+const calledAfterAuth = function(status, responseText) {
+  if (responseText === 'userNameAlreadyExists') {
+    return loadSignUpPage();
+  }
+  serveTodo();
 };

@@ -2,12 +2,13 @@ const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const {
   isFileNotAvailable,
   writeTo,
+  writeToFile,
   loadFile,
   TODO_LOGS
 } = require('./fileOperators');
 
 const STATIC_DIR = `${__dirname}/../public`;
-
+const AUTH_DIR = `${__dirname}/../docs/auth.json`;
 const readBody = function(req, res, path, next) {
   let text = '';
   req.on('data', chunk => {
@@ -170,11 +171,31 @@ const search = function(req, res) {
 //________________________________auth__________________________
 
 const registerUser = function(req, res, path, next) {
-  res.end();
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return next(path);
+  }
+  const authentications = JSON.parse(loadFile(AUTH_DIR, 'utf8'));
+  if (username in authentications) {
+    res.statusCode = 400;
+    return res.end('userNameAlreadyExists');
+  }
+  authentications[username] = { username, password };
+  writeToFile(AUTH_DIR, authentications);
+  next(path);
 };
 
-const loginUser = function(req, res) {
-  res.end;
+const loginUser = function(req, res, path, next) {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return next(path);
+  }
+  const authentications = JSON.parse(loadFile(AUTH_DIR, 'utf8'));
+  if (!(username in authentications)) {
+    res.statusCode = 400;
+    return res.end('invalidUserName');
+  }
+  res.end();
 };
 
 module.exports = {

@@ -5,9 +5,14 @@ const attachMiddlerWare = function(app) {
   app.use(handlers.readBody);
   app.use(handlers.parseBody);
 };
-const attachPostHandlers = function(app) {
+
+const attachAuthHandlers = function(app) {
   app.post('/login', handlers.loginUser);
   app.post('/signup', handlers.registerUser);
+  app.post('/signup', handlers.loginUser);
+};
+
+const attachPostHandlers = function(app) {
   app.post('/saveTodo', handlers.saveBucket);
   app.post('/setStatus', handlers.handleTaskStatus);
   app.post('/deleteBucket', handlers.deleteBucket);
@@ -26,6 +31,7 @@ const attachGetHandlers = function(app) {
 const handleRequest = function(req, res) {
   const app = new App(this['data_store']);
   attachMiddlerWare(app);
+  attachAuthHandlers(app);
   attachPostHandlers(app);
   attachGetHandlers(app);
   app.use(handlers.methodNotAllowed);

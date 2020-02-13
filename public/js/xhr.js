@@ -7,6 +7,7 @@ const handleXhrRequest = function(url, data, callback) {
   req.setRequestHeader('content-type', 'application/json');
   req.send(JSON.stringify(data));
 };
+
 const serveTodo = function() {
   const req = new XMLHttpRequest();
   req.onload = function() {
@@ -74,7 +75,7 @@ const sendSearchRequest = function(event) {
 };
 
 const sendAuthDetails = function(type) {
-  const userName = document.querySelector('input[name="username"]').value;
+  const username = document.querySelector('input[name="username"]').value;
   const password = document.querySelector('input[name="password"]').value;
-  handleXhrRequest(type, { userName, password }, calledAfterAuth);
+  handleXhrRequest(type, { username, password }, calledAfterAuth);
 };
