@@ -18,8 +18,8 @@ class TodoLogs {
 
   static parse(logs) {
     const todoLogs = {};
-    for (const [key, value] of Object.entries(logs)) {
-      const { title, bucketId, tasks, lastTaskId } = value;
+    for (const key in logs) {
+      const { title, bucketId, tasks, lastTaskId } = logs[key];
       todoLogs[key] = new Bucket(title, bucketId, tasks, lastTaskId);
     }
     const keys = Object.keys(todoLogs);
@@ -93,6 +93,13 @@ class TodoLogs {
       }
     });
     return searchedLogs;
+  }
+
+  toJSON() {
+    return {
+      logs: this.logs,
+      lastId: this.lastId
+    };
   }
 }
 module.exports = { TodoLogs };

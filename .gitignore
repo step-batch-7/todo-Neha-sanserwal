@@ -1,3 +1,5 @@
 node_modules
 .nyc_output
-todos.json
+error.log
+info.log
+docs/data.json

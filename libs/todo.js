@@ -57,6 +57,14 @@ class Bucket {
       }
     }
   }
+  toJSON() {
+    return {
+      title: this.title,
+      bucketId: this.bucketId,
+      tasks: this.tasks,
+      lastTaskId: this.lastTaskId
+    };
+  }
 }
 
 module.exports = { Bucket };

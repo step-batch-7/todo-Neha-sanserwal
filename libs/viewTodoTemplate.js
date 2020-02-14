@@ -5,27 +5,27 @@ const replaceText = function(key, value, template) {
 };
 const readTask = function(task, reader) {
   let taskTemplate = reader('templates/taskTemplate.html', 'utf8');
-  for (const [key, value] of Object.entries(task)) {
-    taskTemplate = replaceText(key, value, taskTemplate);
+  for (const key in task) {
+    taskTemplate = replaceText(key, task[key], taskTemplate);
   }
   return taskTemplate;
 };
 
 const collectTaskList = function(tasks, reader) {
   let listTemplate = '';
-  for (const [, value] of Object.entries(tasks)) {
-    listTemplate += readTask(value, reader);
+  for (const key in tasks) {
+    listTemplate += readTask(tasks[key], reader);
   }
   return listTemplate;
 };
 
 const readTodoList = function(bucket, reader) {
   let todoTemplate = reader('templates/todoTemplate.html', 'utf8');
-  for (const [key, value] of Object.entries(bucket)) {
+  for (const key in bucket) {
     if (key !== 'tasks') {
-      todoTemplate = replaceText(key, value, todoTemplate);
+      todoTemplate = replaceText(key, bucket[key], todoTemplate);
     } else {
-      const allTasks = collectTaskList(value, reader);
+      const allTasks = collectTaskList(bucket[key], reader);
       todoTemplate = replaceText(key, allTasks, todoTemplate);
     }
   }
@@ -33,8 +33,8 @@ const readTodoList = function(bucket, reader) {
 };
 const readCards = function(allTodo, reader) {
   let todoCards = '';
-  for (const [, value] of Object.entries(allTodo)) {
-    todoCards += readTodoList(value, reader);
+  for (const key in allTodo) {
+    todoCards += readTodoList(allTodo[key], reader);
   }
   return todoCards;
 };

@@ -1,37 +1,33 @@
-class App {
-  constructor(path) {
-    this.filePath = path;
-    this.routes = [];
-  }
-  get(path, handler) {
-    this.routes.push({ path, handler, method: 'GET' });
-  }
-  post(path, handler) {
-    this.routes.push({ path, handler, method: 'POST' });
-  }
-  use(middleware) {
-    this.routes.push({ handler: middleware });
-  }
-  serve(req, res) {
-    // eslint-disable-next-line no-console
-    console.log('url:', req.url, '  ', 'method:', req.method);
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const { router } = require('./userRouter.js');
+const { loadData } = require('./fileOperators');
+const config = require('../config');
+const handlers = require('./handlers');
 
-    const matchingHandlers = this.routes.filter(route =>
-      matchRoute(route, req)
-    );
-    const next = function(path) {
-      const router = matchingHandlers.shift();
-      router && router.handler(req, res, path, next);
-    };
-    next(this.filePath);
-  }
-}
+const app = express();
 
-const matchRoute = function(route, req) {
-  if (route.method) {
-    return req.method === route.method && req.url.match(route.path);
-  }
-  return true;
-};
+app.locals.data = loadData(config['data_store']);
+app.locals.path = config['data_store'];
 
-module.exports = { App };
+app.use((req, res, next) => {
+  console.log(`url:${req.url}  method:${req.method}`);
+  next();
+});
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static('public'));
+app.post(
+  '/signup',
+  handlers.checkAuthDetails,
+  handlers.registerUser,
+  handlers.loginUser
+);
+app.post(
+  '/login',
+  handlers.hasOptions('username', 'password'),
+  handlers.loginUser
+);
+app.use('/user', router);
+module.exports = app;

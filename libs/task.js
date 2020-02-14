@@ -23,5 +23,13 @@ class Task {
   change(text) {
     this.text = text;
   }
+  toJSON() {
+    return {
+      status: this.status,
+      bucketId: this.bucketId,
+      taskId: this.taskId,
+      text: this.text
+    };
+  }
 }
 module.exports = { Task };

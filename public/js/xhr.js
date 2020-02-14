@@ -15,25 +15,25 @@ const serveTodo = function() {
     loadTodoNav();
     changeMainPageContent(this.status, this.responseText, 'todoPage');
   };
-  req.open('GET', '/todo');
+  req.open('GET', '/user/todo');
   req.send();
 };
 const sendSaveRequest = function() {
   const title = document.getElementById('title').value;
-  handleXhrRequest('/saveTodo', { title }, changeMainPageContent);
+  handleXhrRequest('/user/saveTodo', { title }, changeMainPageContent);
 };
 
 const sendEditTitleRequest = function(event) {
   const title = event.target.innerText;
   const bucketId = event.target.id;
   const data = { title, bucketId };
-  handleXhrRequest('/editTitle', data, changeMainPageContent);
+  handleXhrRequest('/user/editTitle', data, changeMainPageContent);
 };
 
 const sendDeleteBucketRequest = function(event) {
   const bucketId = event.target.id;
   const data = { bucketId };
-  handleXhrRequest('/deleteBucket', data, changeMainPageContent);
+  handleXhrRequest('/user/deleteBucket', data, changeMainPageContent);
 };
 
 const sendSaveNewTaskRequest = function(event) {
