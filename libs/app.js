@@ -11,6 +11,7 @@ app.locals.data = loadData(config['data_store']);
 app.locals.path = config['data_store'];
 
 app.use((req, res, next) => {
+  // eslint-disable-next-line no-console
   console.log(`url:${req.url}  method:${req.method}`);
   next();
 });

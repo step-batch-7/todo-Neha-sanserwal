@@ -6,6 +6,7 @@ const readTodoPage = function(todoLogs) {
   const allTodo = todoLogs.getAllLogs();
   return loadTodoPage(allTodo, loadFile);
 };
+
 const serveTodoPage = function(req, res) {
   const todoPage = readTodoPage(req.todo);
   res.end(todoPage);
@@ -51,75 +52,48 @@ const editBucketTitle = function(req, res) {
 
 //____________________________task handlers_________________________
 
-const handleTaskStatus = function(req, res, path, next) {
+const handleTaskStatus = function(req, res) {
   const { bucketId, taskId } = req.body;
-  if (!bucketId || !taskId) {
-    next(path);
-  }
-  const todoFile = `${path}${req.username}.json`;
-  const todoLogs = getTodoLogs(todoFile);
-  todoLogs.changeTaskStatus(bucketId, taskId);
-  todoLogs.write(todoFile, writeToFile);
-  res.end(readTodoPage(todoLogs));
+  req.todo.changeTaskStatus(bucketId, taskId);
+  const template = readTodoPage(req.todo);
+  writeToFile(req.app.locals.path, req.app.locals.data);
+  res.end(template);
 };
 
-const saveNewTask = function(req, res, path, next) {
+const saveNewTask = function(req, res) {
   const { bucketId, task } = req.body;
-  if (!bucketId || !task) {
-    next(path);
-  }
-  const todoFile = `${path}${req.username}.json`;
-  const todoLogs = getTodoLogs(todoFile);
-  todoLogs.appendTask(bucketId, task);
-  todoLogs.write(todoFile, writeToFile);
-  res.end(readTodoPage(todoLogs));
+  req.todo.appendTask(bucketId, task);
+  const template = readTodoPage(req.todo);
+  writeToFile(req.app.locals.path, req.app.locals.data);
+  res.end(template);
 };
 
-const deleteTask = function(req, res, path, next) {
+const deleteTask = function(req, res) {
   const { bucketId, taskId } = req.body;
-  if (!bucketId || !taskId) {
-    next(path);
-  }
-  const todoFile = `${path}${req.username}.json`;
-  const todoLogs = getTodoLogs(todoFile);
-  todoLogs.deleteTask(bucketId, taskId);
-  todoLogs.write(todoFile, writeToFile);
-  res.end(readTodoPage(todoLogs));
+  req.todo.deleteTask(bucketId, taskId);
+  const template = readTodoPage(req.todo);
+  writeToFile(req.app.locals.path, req.app.locals.data);
+  res.end(template);
 };
 
-const editTask = function(req, res, path, next) {
+const editTask = function(req, res) {
   const { bucketId, taskId, text } = req.body;
-  if (!bucketId || !taskId || !text) {
-    next(path);
-  }
-  const todoFile = `${path}${req.username}.json`;
-  const todoLogs = getTodoLogs(todoFile);
-  todoLogs.editTask(bucketId, taskId, text);
-  todoLogs.write(todoFile, writeToFile);
-  res.end(readTodoPage(todoLogs));
+  req.todo.editTask(bucketId, taskId, text);
+  const template = readTodoPage(req.todo);
+  writeToFile(req.app.locals.path, req.app.locals.data);
+  res.end(template);
 };
 
-const notFound = function(req, res) {
-  res.writeHead('404', 'NOT FOUND');
-  res.end();
-};
-const methodNotAllowed = function(req, res) {
-  res.writeHead('400', 'Method Not Allowed');
-  res.end();
-};
-
-const search = function(req, res, path, next) {
+const search = function(req, res) {
   const { text, searchBy } = req.body;
   if (text === '') {
-    res.end(readTodoPage(todoLogs));
+    res.end(readTodoPage(req.todo));
   }
-  const todoFile = `${path}${req.username}.json`;
-  const todoLogs = getTodoLogs(todoFile);
   if (searchBy === 'Title') {
-    const cards = readCards(todoLogs.searchTitle(text), loadFile);
+    const cards = readCards(req.todo.searchTitle(text), loadFile);
     res.end(cards);
   }
-  const cards = readCards(todoLogs.searchTask(text), loadFile);
+  const cards = readCards(req.todo.searchTask(text), loadFile);
   res.end(cards);
 };
 
@@ -128,10 +102,10 @@ const checkAuthDetails = function(req, res, next) {
   const data = req.app.locals.data;
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).send('bad request');
+    return res.status('400').send('bad request');
   }
   if (username in data) {
-    return res.status(400).send('userNameAlreadyExists');
+    return res.status('400').send('userNameAlreadyExists');
   }
   next();
 };
@@ -139,16 +113,20 @@ const checkAuthDetails = function(req, res, next) {
 const registerUser = function(req, res, next) {
   const data = req.app.locals.data;
   const { username, password } = req.body;
-  data[username] = { username, password, todo: {} };
+  const lastId = 1000;
+  data[username] = { username, password, todo: new TodoLogs({}, lastId) };
   writeToFile(req.app.locals.path, data);
   next();
 };
 
-const loginUser = function(req, res, next) {
+const loginUser = function(req, res) {
   const { username, password } = req.body;
   const data = req.app.locals.data;
   if (!(username in data)) {
     return res.status('400').send('invalidUserName');
+  }
+  if (data[username].password !== password) {
+    return res.status('400').send('wrongPassword');
   }
   res.cookie('user', username).end();
 };
@@ -181,8 +159,6 @@ module.exports = {
   deleteBucket,
   deleteTask,
   editTask,
-  notFound,
-  methodNotAllowed,
   editBucketTitle,
   handleTaskStatus,
   search
