@@ -4,7 +4,8 @@ class Session {
     this.sessionUser = sessionUser;
   }
   static createSession(user) {
-    const randomId = new Date().getTime() + Math.floor(Math.random() * 10000);
+    const range = 10000;
+    const randomId = new Date().getTime() + Math.floor(Math.random() * range);
     return new Session(randomId, user);
   }
 

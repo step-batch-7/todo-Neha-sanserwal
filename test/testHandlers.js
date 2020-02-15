@@ -4,9 +4,11 @@ const fs = require('fs');
 const sinon = require('sinon');
 const { TodoLogs } = require('../libs/todoLogs');
 const { Bucket } = require('../libs/todo');
+const { Session } = require('../libs/session');
 const { Task } = require('../libs/task');
 
 describe('GET request', function() {
+  let cookie;
   before(() => {
     sinon.replace(fs, 'existsSync', () => {
       return true;
@@ -14,31 +16,40 @@ describe('GET request', function() {
     sinon.replace(fs, 'readFileSync', () => {
       return '{}';
     });
+    sinon.stub(Math, 'random').returns(4);
+    sinon.useFakeTimers(new Date().getTime());
   });
+
   beforeEach(() => {
     app.locals.data = {
       john: { username: 'john', password: 123, todo: new TodoLogs({}, 1000) }
     };
+    app.locals.sessions = {
+      john: new Session(1581756499018, 'john')
+    };
+    cookie =
+      'todo=j%3A%7B%22id%22%3A1581756499018%2C%22user%22%3A%22john%22%7D';
   });
+
   describe('homePage', function() {
     it('should serveTodo when the route is /', function(done) {
       request(app)
         .get('/')
-        .expect('Content-type', 'text/html; charset=UTF-8')
+        .expect('Content-type', /text\/html/)
         .expect(200, done);
     });
     it('should serveTodo when the route is /todo and cookie is set', done => {
       request(app)
         .get('/user/todo')
-        .set('cookie', 'user=john')
-        .expect('content-type', 'text/html')
+        .set('cookie', cookie)
+        .expect('content-type', /text\/html/)
         .expect(200, done);
     });
   });
   it('should load css when browser ask for it', function(done) {
     request(app)
       .get('/css/app.css')
-      .expect('Content-type', 'text/css; charset=UTF-8')
+      .expect('Content-type', /text\/css/)
       .expect(200, done);
   });
   it('should load js files when browser ask for it', function(done) {
@@ -79,6 +90,16 @@ describe('file not found', function() {
 });
 
 describe('POST request', function() {
+  let cookie;
+  before(() => {
+    sinon.stub(Math, 'random').returns(4);
+    sinon.useFakeTimers(new Date().getTime());
+  });
+
+  after(() => {
+    sinon.restore();
+  });
+
   describe('saveTodo', function() {
     beforeEach(() => {
       app.locals.data = {
@@ -86,11 +107,14 @@ describe('POST request', function() {
       };
       app.locals.path = 'abc';
       app.locals.writer = () => {};
+      cookie =
+        'todo=j%3A%7B%22id%22%3A1581756499018%2C%22user%22%3A%22john%22%7D';
     });
+
     it('should save the todo ', function(done) {
       request(app)
         .post('/user/saveTodo')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ title: 'class' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -98,7 +122,7 @@ describe('POST request', function() {
     it('should give bad request when title is not given', function(done) {
       request(app)
         .post('/user/saveTodo')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -121,7 +145,7 @@ describe('POST request', function() {
     it(' should delete a todo', function(done) {
       request(app)
         .post('/user/deleteBucket')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001 })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -129,7 +153,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId is not given', function(done) {
       request(app)
         .post('/user/deleteBucket')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -151,7 +175,7 @@ describe('POST request', function() {
     it('should edit the title of given todoId', done => {
       request(app)
         .post('/user/editTitle')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001, title: 'office' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -159,7 +183,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId is not given', function(done) {
       request(app)
         .post('/user/editTitle')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -181,7 +205,7 @@ describe('POST request', function() {
     it('should save the given task', done => {
       request(app)
         .post('/user/saveNewTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001, task: 'hello' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -189,7 +213,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId is not given', function(done) {
       request(app)
         .post('/user/saveNewTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -197,7 +221,7 @@ describe('POST request', function() {
     it(' should give bad request when task is not given', function(done) {
       request(app)
         .post('/user/saveNewTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -220,7 +244,7 @@ describe('POST request', function() {
     it('should delete the task of give id', done => {
       request(app)
         .post('/user/deleteTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001, taskId: 2001 })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -228,7 +252,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId is not given', function(done) {
       request(app)
         .post('/user/deleteTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -236,7 +260,7 @@ describe('POST request', function() {
     it(' should give bad request when task is not given', function(done) {
       request(app)
         .post('/user/deleteTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -260,7 +284,7 @@ describe('POST request', function() {
     it('should edit the task of give id', done => {
       request(app)
         .post('/user/editTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001, taskId: 2001, text: 'take books' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -268,7 +292,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId or text is not given', function(done) {
       request(app)
         .post('/user/editTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ taskId: 123 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -276,7 +300,7 @@ describe('POST request', function() {
     it(' should give bad request when taskId or text is not given', function(done) {
       request(app)
         .post('/user/editTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -284,7 +308,7 @@ describe('POST request', function() {
     it(' should give bad request when taskId or bucketId is not given', function(done) {
       request(app)
         .post('/user/editTask')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ text: '' })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -308,7 +332,7 @@ describe('POST request', function() {
     it('should mark the task as done of give id', done => {
       request(app)
         .post('/user/setStatus')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 1001, taskId: 2001 })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -316,7 +340,7 @@ describe('POST request', function() {
     it(' should give bad request when bucketId is not given', function(done) {
       request(app)
         .post('/user/setStatus')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -324,7 +348,7 @@ describe('POST request', function() {
     it(' should give bad request when task is not given', function(done) {
       request(app)
         .post('/user/setStatus')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -347,7 +371,7 @@ describe('POST request', function() {
     it('should search title if the search-by option is Title', function(done) {
       request(app)
         .post('/user/search')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ text: 'a', searchBy: 'Title' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -355,7 +379,7 @@ describe('POST request', function() {
     it('should search task if the search-by option is Task', function(done) {
       request(app)
         .post('/user/search')
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .send({ text: 'h', searchBy: 'Task' })
         .set('accept', 'application/json')
         .expect(200, done);
@@ -364,7 +388,7 @@ describe('POST request', function() {
       request(app)
         .post('/user/search')
         .send({ text: '', searchBy: 'Task' })
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .set('accept', 'application/json')
         .expect(200, done);
     });
@@ -372,7 +396,7 @@ describe('POST request', function() {
       request(app)
         .post('/user/search')
         .send({ text: '', searchBy: 'Title' })
-        .set('cookie', 'user=john')
+        .set('cookie', cookie)
         .set('accept', 'application/json')
         .expect(200, done);
     });
