@@ -1,6 +1,7 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
 const { loadFile } = require('./fileOperators');
 const { TodoLogs } = require('./todoLogs');
+const { Session } = require('./session');
 
 const readTodoPage = function(todoLogs) {
   const allTodo = todoLogs.getAllLogs();
@@ -30,7 +31,7 @@ const saveBucket = function(req, res) {
   const { title } = req.body;
   req.todo.append(title);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
 
   res.end(template);
 };
@@ -39,7 +40,7 @@ const deleteBucket = function(req, res) {
   const { bucketId } = req.body;
   req.todo.deleteBucket(bucketId);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -47,7 +48,7 @@ const editBucketTitle = function(req, res) {
   const { bucketId, title } = req.body;
   req.todo.editBucketTitle(bucketId, title);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -57,7 +58,7 @@ const handleTaskStatus = function(req, res) {
   const { bucketId, taskId } = req.body;
   req.todo.changeTaskStatus(bucketId, taskId);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -65,7 +66,7 @@ const saveNewTask = function(req, res) {
   const { bucketId, task } = req.body;
   req.todo.appendTask(bucketId, task);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -73,7 +74,7 @@ const deleteTask = function(req, res) {
   const { bucketId, taskId } = req.body;
   req.todo.deleteTask(bucketId, taskId);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -81,7 +82,7 @@ const editTask = function(req, res) {
   const { bucketId, taskId, text } = req.body;
   req.todo.editTask(bucketId, taskId, text);
   const template = readTodoPage(req.todo);
-  req.writer(req.app.locals.path, req.app.locals.data);
+  req.writer(req.path, req.data);
   res.end(template);
 };
 
@@ -100,50 +101,49 @@ const search = function(req, res) {
 
 //________________________________auth__________________________
 const checkAuthDetails = function(req, res, next) {
-  const data = req.app.locals.data;
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status('400').send('bad request');
   }
-  if (username in data) {
+  if (username in req.data) {
     return res.status('400').send('userNameAlreadyExists');
   }
   next();
 };
 
 const registerUser = function(req, res, next) {
-  const data = req.app.locals.data;
   const { username, password } = req.body;
   const lastId = 1000;
-  data[username] = { username, password, todo: new TodoLogs({}, lastId) };
-  req.writer(req.app.locals.path, data);
+  req.data[username] = { username, password, todo: new TodoLogs({}, lastId) };
+  req.writer(req.path, req.data);
   next();
 };
 
 const loginUser = function(req, res) {
   const { username, password } = req.body;
-  const data = req.app.locals.data;
+  const data = req.data;
   if (!(username in data)) {
     return res.status('400').send('invalidUserName');
   }
   if (data[username].password !== password) {
     return res.status('400').send('wrongPassword');
   }
-  res.cookie('user', username).end();
+  req.sessions[username] = Session.createSession(username);
+  res.cookie('todo', req.sessions[username].currentSession).end();
 };
 
 const checkUserAccessability = function(req, res, next) {
-  const data = req.app.locals.data;
-  const cookie = req.cookies;
-  if (cookie.user in data) {
+  const cookie = req.cookies.todo;
+  const currentUser = cookie.user;
+  if (req.sessions[currentUser].isEqualTo(cookie)) {
     return next();
   }
-  res.status('400').send('Bad Request');
+  res.status('400').send('Bad Request from login');
 };
 
 const loadUserData = function(req, res, next) {
-  const user = req.cookies.user;
-  req.todo = req.app.locals.data[user].todo;
+  const user = req.cookies.todo.user;
+  req.todo = req.data[user].todo;
   next();
 };
 
