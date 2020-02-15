@@ -1,24 +1,19 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 const { router } = require('./userRouter.js');
-const { loadData } = require('./fileOperators');
-const config = require('../config');
 const handlers = require('./handlers');
 
 const app = express();
 
-app.locals.data = loadData(config['data_store']);
-app.locals.path = config['data_store'];
-
-app.use((req, res, next) => {
-  // eslint-disable-next-line no-console
-  console.log(`url:${req.url}  method:${req.method}`);
-  next();
-});
-
+app.use(morgan('tiny'));
 app.use(express.json({ extends: 'true' }));
 app.use(cookieParser());
 app.use(express.static('public'));
+app.use((req, res, next) => {
+  req.writer = req.app.locals.writer;
+  next();
+});
 app.post(
   '/signup',
   handlers.checkAuthDetails,
@@ -31,4 +26,11 @@ app.post(
   handlers.loginUser
 );
 app.use('/user', router);
+
+app.put('/*/', (req, res) => {
+  res.status('405').send('Method Not Allowed');
+});
+app.delete('/*/', (req, res) => {
+  res.status('405').send('Method Not Allowed');
+});
 module.exports = app;

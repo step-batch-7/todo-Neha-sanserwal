@@ -27,4 +27,15 @@ describe('Task', function() {
       assert.strictEqual(task.text, 'bye');
     });
   });
+  describe('toJSON', function() {
+    it('should return the stringified data', function() {
+      const task = new Task('checked', 123, 23, 'hello');
+      assert.deepStrictEqual(task.toJSON(), {
+        status: 'checked',
+        taskId: 23,
+        bucketId: 123,
+        text: 'hello'
+      });
+    });
+  });
 });

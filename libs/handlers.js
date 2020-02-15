@@ -1,5 +1,5 @@
 const { loadTodoPage, readCards } = require('./viewTodoTemplate');
-const { writeToFile, loadFile } = require('./fileOperators');
+const { loadFile } = require('./fileOperators');
 const { TodoLogs } = require('./todoLogs');
 
 const readTodoPage = function(todoLogs) {
@@ -30,7 +30,7 @@ const saveBucket = function(req, res) {
   const { title } = req.body;
   req.todo.append(title);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
 
   res.end(template);
 };
@@ -39,7 +39,7 @@ const deleteBucket = function(req, res) {
   const { bucketId } = req.body;
   req.todo.deleteBucket(bucketId);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -47,7 +47,7 @@ const editBucketTitle = function(req, res) {
   const { bucketId, title } = req.body;
   req.todo.editBucketTitle(bucketId, title);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -57,7 +57,7 @@ const handleTaskStatus = function(req, res) {
   const { bucketId, taskId } = req.body;
   req.todo.changeTaskStatus(bucketId, taskId);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -65,7 +65,7 @@ const saveNewTask = function(req, res) {
   const { bucketId, task } = req.body;
   req.todo.appendTask(bucketId, task);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -73,7 +73,7 @@ const deleteTask = function(req, res) {
   const { bucketId, taskId } = req.body;
   req.todo.deleteTask(bucketId, taskId);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -81,7 +81,7 @@ const editTask = function(req, res) {
   const { bucketId, taskId, text } = req.body;
   req.todo.editTask(bucketId, taskId, text);
   const template = readTodoPage(req.todo);
-  writeToFile(req.app.locals.path, req.app.locals.data);
+  req.writer(req.app.locals.path, req.app.locals.data);
   res.end(template);
 };
 
@@ -116,7 +116,7 @@ const registerUser = function(req, res, next) {
   const { username, password } = req.body;
   const lastId = 1000;
   data[username] = { username, password, todo: new TodoLogs({}, lastId) };
-  writeToFile(req.app.locals.path, data);
+  req.writer(req.app.locals.path, data);
   next();
 };
 

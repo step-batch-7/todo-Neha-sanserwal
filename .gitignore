@@ -3,3 +3,4 @@ node_modules
 error.log
 info.log
 docs/data.json
+coverage

@@ -61,10 +61,9 @@ class TodoLogs {
   }
 
   deleteTask(parentId, taskId) {
-    const { title, bucketId, tasks } = this.logs[parentId];
-    const bucket = new Bucket(title, bucketId, tasks);
-    bucket.delete(taskId);
+    this.logs[parentId].delete(taskId);
   }
+
   editTask(bucketId, taskId, text) {
     const bucket = this.logs[bucketId];
     bucket.edit(taskId, text);

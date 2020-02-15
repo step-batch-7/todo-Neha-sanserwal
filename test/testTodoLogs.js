@@ -36,7 +36,7 @@ describe('TodoLogs', function() {
     it('should write the data to given file', function() {
       const fakeWrite = sinon.fake();
       const todoLogs = new TodoLogs({}, 2000);
-      todoLogs.write(fakeWrite);
+      todoLogs.write('path', fakeWrite);
       sinon.assert.calledOnce(fakeWrite);
     });
   });
@@ -157,6 +157,21 @@ describe('TodoLogs', function() {
       const bucket = new Bucket('office', 101, { 2001: task }, 2001);
       const todoLogs = new TodoLogs({ 101: bucket }, 101);
       assert.deepStrictEqual(todoLogs.searchTask('pens'), {});
+    });
+  });
+  describe('toJSON', function() {
+    it('should return the stringified data', function() {
+      const todoLogs = new TodoLogs({}, 2000);
+      assert.deepStrictEqual(todoLogs.toJSON(), {
+        logs: {},
+        lastId: 2000
+      });
+    });
+  });
+  describe('getAllLogs', function() {
+    it('should give all todos', function() {
+      const todoLogs = new TodoLogs({}, 2000);
+      assert.deepStrictEqual(todoLogs.getAllLogs(), {});
     });
   });
 });

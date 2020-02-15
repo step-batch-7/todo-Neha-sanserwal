@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./testFile.sh",
-    "start": "export data_store=$(pwd)/docs/data.json; node server.js 8000 "
+    "test": "nyc mocha",
+    "start": "node server.js 8000 "
   },
   "repository": {
     "type": "git",

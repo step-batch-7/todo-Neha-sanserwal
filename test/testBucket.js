@@ -88,4 +88,15 @@ describe('Bucket', function() {
       assert.ok(bucket.hasTask('take'));
     });
   });
+  describe('toJSON', function() {
+    it('should return the stringified data', function() {
+      const bucket = new Bucket('class', 1, {}, 2000);
+      assert.deepStrictEqual(bucket.toJSON(), {
+        title: 'class',
+        bucketId: 1,
+        tasks: {},
+        lastTaskId: 2000
+      });
+    });
+  });
 });

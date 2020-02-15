@@ -2,7 +2,9 @@ const request = require('supertest');
 const app = require('../libs/app');
 const fs = require('fs');
 const sinon = require('sinon');
-const { TODO_LOGS } = require('../libs/fileOperators');
+const { TodoLogs } = require('../libs/todoLogs');
+const { Bucket } = require('../libs/todo');
+const { Task } = require('../libs/task');
 
 describe('GET request', function() {
   before(() => {
@@ -12,6 +14,11 @@ describe('GET request', function() {
     sinon.replace(fs, 'readFileSync', () => {
       return '{}';
     });
+  });
+  beforeEach(() => {
+    app.locals.data = {
+      john: { username: 'john', password: 123, todo: new TodoLogs({}, 1000) }
+    };
   });
   describe('homePage', function() {
     it('should serveTodo when the route is /', function(done) {
@@ -50,7 +57,16 @@ describe('Bad request', function() {
     request(app)
       .put('/')
       .send({ name: 'john' })
-      .expect(400, done);
+      .expect(405, done);
+  });
+});
+
+describe('Bad request', function() {
+  it('should not allow methods on page which are not allowed', function(done) {
+    request(app)
+      .delete('/')
+      .send({ name: 'john' })
+      .expect(405, done);
   });
 });
 
@@ -64,17 +80,25 @@ describe('file not found', function() {
 
 describe('POST request', function() {
   describe('saveTodo', function() {
-    it('should post the todo', function(done) {
-      sinon.stub(TODO_LOGS, 'append');
-      request(handleRequest)
-        .post('/saveTodo')
+    beforeEach(() => {
+      app.locals.data = {
+        john: { username: 'john', password: 123, todo: new TodoLogs({}, 1000) }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
+    it('should save the todo ', function(done) {
+      request(app)
+        .post('/user/saveTodo')
+        .set('cookie', 'user=john')
         .send({ title: 'class' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it('should give bad request when title is not given', function(done) {
-      request(handleRequest)
-        .post('/saveTodo')
+      request(app)
+        .post('/user/saveTodo')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
@@ -82,82 +106,137 @@ describe('POST request', function() {
   });
 
   describe('deleteBucket', function() {
+    beforeEach(() => {
+      const bucket = new Bucket('abc', 1001, {}, 2000);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it(' should delete a todo', function(done) {
-      sinon.stub(TODO_LOGS, 'deleteBucket');
-      request(handleRequest)
-        .post('/deleteBucket')
-        .send({ bucketId: 1000 })
+      request(app)
+        .post('/user/deleteBucket')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001 })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/deleteBucket')
+      request(app)
+        .post('/user/deleteBucket')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
     });
   });
   describe('editTitle', function() {
+    beforeEach(() => {
+      const bucket = new Bucket('abc', 1001, {}, 2000);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should edit the title of given todoId', done => {
-      sinon.stub(TODO_LOGS, 'editBucketTitle');
-      request(handleRequest)
-        .post('/editTitle')
-        .send({ bucketId: 1000, title: 'office' })
+      request(app)
+        .post('/user/editTitle')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001, title: 'office' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/editTitle')
+      request(app)
+        .post('/user/editTitle')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
     });
   });
   describe('saveNewTask', function() {
+    beforeEach(() => {
+      const bucket = new Bucket('abc', 1001, {}, 2000);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should save the given task', done => {
-      sinon.stub(TODO_LOGS, 'appendTask');
-      request(handleRequest)
-        .post('/saveNewTask')
-        .send({ bucketId: 1000, task: 'hello' })
+      request(app)
+        .post('/user/saveNewTask')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001, task: 'hello' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/saveNewTask')
+      request(app)
+        .post('/user/saveNewTask')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
-      request(handleRequest)
-        .post('/saveNewTask')
+      request(app)
+        .post('/user/saveNewTask')
+        .set('cookie', 'user=john')
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
     });
   });
   describe('deleteTask', function() {
+    beforeEach(() => {
+      const task = new Task('', 1001, 2001, 'hello');
+      const bucket = new Bucket('abc', 1001, { 2001: task }, 2001);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should delete the task of give id', done => {
-      sinon.stub(TODO_LOGS, 'deleteTask');
-      request(handleRequest)
-        .post('/deleteTask')
-        .send({ bucketId: 1000, taskId: '2000' })
+      request(app)
+        .post('/user/deleteTask')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001, taskId: 2001 })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/deleteTask')
+      request(app)
+        .post('/user/deleteTask')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
-      request(handleRequest)
-        .post('/deleteTask')
+      request(app)
+        .post('/user/deleteTask')
+        .set('cookie', 'user=john')
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -165,31 +244,47 @@ describe('POST request', function() {
   });
 
   describe('editTask', function() {
+    beforeEach(() => {
+      const task = new Task('', 1001, 2001, 'hello');
+      const bucket = new Bucket('abc', 1001, { 2001: task }, 2001);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should edit the task of give id', done => {
-      sinon.stub(TODO_LOGS, 'editTask');
-      request(handleRequest)
-        .post('/editTask')
-        .send({ bucketId: 1000, taskId: '2000', text: 'take books' })
+      request(app)
+        .post('/user/editTask')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001, taskId: 2001, text: 'take books' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId or text is not given', function(done) {
-      request(handleRequest)
-        .post('/editTask')
+      request(app)
+        .post('/user/editTask')
+        .set('cookie', 'user=john')
         .send({ taskId: 123 })
         .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when taskId or text is not given', function(done) {
-      request(handleRequest)
-        .post('/editTask')
+      request(app)
+        .post('/user/editTask')
+        .set('cookie', 'user=john')
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when taskId or bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/editTask')
+      request(app)
+        .post('/user/editTask')
+        .set('cookie', 'user=john')
         .send({ text: '' })
         .set('accept', 'application/json')
         .expect(400, done);
@@ -197,57 +292,89 @@ describe('POST request', function() {
   });
 
   describe('setStatus', function() {
+    beforeEach(() => {
+      const task = new Task('', 1001, 2001, 'hello');
+      const bucket = new Bucket('abc', 1001, { 2001: task }, 2001);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should mark the task as done of give id', done => {
-      sinon.stub(TODO_LOGS, 'changeTaskStatus');
-      request(handleRequest)
-        .post('/setStatus')
-        .send({ bucketId: 1000, taskId: '2000' })
+      request(app)
+        .post('/user/setStatus')
+        .set('cookie', 'user=john')
+        .send({ bucketId: 1001, taskId: 2001 })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it(' should give bad request when bucketId is not given', function(done) {
-      request(handleRequest)
-        .post('/setStatus')
+      request(app)
+        .post('/user/setStatus')
+        .set('cookie', 'user=john')
         .send({})
         .set('accept', 'application/json')
         .expect(400, done);
     });
     it(' should give bad request when task is not given', function(done) {
-      request(handleRequest)
-        .post('/setStatus')
+      request(app)
+        .post('/user/setStatus')
+        .set('cookie', 'user=john')
         .send({ bucketId: 101 })
         .set('accept', 'application/json')
         .expect(400, done);
     });
   });
   describe('/search', function() {
+    beforeEach(() => {
+      const task = new Task('', 1001, 2001, 'hello');
+      const bucket = new Bucket('abc', 1001, { 2001: task }, 2001);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
     it('should search title if the search-by option is Title', function(done) {
-      sinon.stub(TODO_LOGS, 'searchTitle').returns({});
-      request(handleRequest)
-        .post('/search')
+      request(app)
+        .post('/user/search')
+        .set('cookie', 'user=john')
         .send({ text: 'a', searchBy: 'Title' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
     it('should search task if the search-by option is Task', function(done) {
-      sinon.stub(TODO_LOGS, 'searchTask').returns({});
-      request(handleRequest)
-        .post('/search')
-        .send({ text: 'a', searchBy: 'Task' })
+      request(app)
+        .post('/user/search')
+        .set('cookie', 'user=john')
+        .send({ text: 'h', searchBy: 'Task' })
         .set('accept', 'application/json')
         .expect(200, done);
     });
-    it('should search task if the search-by option is Task', function(done) {
-      sinon.stub(TODO_LOGS, 'getAllLogs').returns({});
-      request(handleRequest)
-        .post('/search')
-        .send({ text: '' })
+    it('should return to same page when text is empty and searchBy is Task', function(done) {
+      request(app)
+        .post('/user/search')
+        .send({ text: '', searchBy: 'Task' })
+        .set('cookie', 'user=john')
         .set('accept', 'application/json')
-        .expect(200)
-        .end(() => {
-          sinon.assert.calledOnce(TODO_LOGS.getAllLogs);
-          done();
-        });
+        .expect(200, done);
+    });
+    it('should return to same page when text is empty and searchBy is Title', function(done) {
+      request(app)
+        .post('/user/search')
+        .send({ text: '', searchBy: 'Title' })
+        .set('cookie', 'user=john')
+        .set('accept', 'application/json')
+        .expect(200, done);
     });
   });
 });
