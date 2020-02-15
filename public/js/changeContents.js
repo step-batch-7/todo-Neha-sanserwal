@@ -5,11 +5,17 @@ const loadSignUpPage = function() {
         <div class="loginContainer">
           <input type="text" placeholder="username" name="username"/>
           <input type="password" placeholder="password" name="password"/>
-          <input type="password" placeholder="re-enter password" />
+          <input type="password" placeholder="re-enter password" name ='confirmPass'/>
+          <div class = 'errorMsg'></div>
           <button onclick="sendAuthDetails('/signup')">SIGN UP</button>
           <div>Already have an account <a href="#" onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
       </div>`;
+};
+
+const showError = function(msg) {
+  const errorBox = document.querySelector('.errorMsg');
+  errorBox.innerHTML = msg;
 };
 
 const loadLoginPage = function() {

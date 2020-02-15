@@ -9,15 +9,23 @@ const handleXhrRequest = function(url, data, callback) {
   req.send(JSON.stringify(data));
 };
 
+const showPage = function(req) {
+  if (req.responseText === 'Bad Request') {
+    loadLoginPage();
+    return;
+  }
+  loadTodoNav();
+  changeMainPageContent(req.status, req.responseText, 'todoPage');
+};
 const serveTodo = function() {
   const req = new XMLHttpRequest();
-  req.onload = function() {
-    loadTodoNav();
-    changeMainPageContent(this.status, this.responseText, 'todoPage');
+  req.onload = () => {
+    showPage(req);
   };
   req.open('GET', '/user/todo');
   req.send();
 };
+
 const sendSaveRequest = function() {
   const title = document.getElementById('title').value;
   handleXhrRequest('/user/saveTodo', { title }, changeMainPageContent);
@@ -77,6 +85,12 @@ const sendSearchRequest = function(event) {
 const sendAuthDetails = function(type) {
   const username = document.querySelector('input[name="username"]').value;
   const password = document.querySelector('input[name="password"]').value;
+  const confirmPass = document.querySelector('input[name="confirmPass"]');
+  if (confirmPass) {
+    if (confirmPass.value !== password) {
+      return showError('* Password did not matched');
+    }
+  }
   handleXhrRequest(type, { username, password }, calledAfterAuth);
 };
 

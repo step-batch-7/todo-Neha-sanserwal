@@ -155,7 +155,7 @@ const checkUserAccessability = function(req, res, next) {
   if (cookie && req.sessions[cookie.user].isEqualTo(cookie)) {
     return next();
   }
-  res.status('400').send('Bad Request from login');
+  res.status('400').send('Bad Request');
 };
 
 const loadUserData = function(req, res, next) {
