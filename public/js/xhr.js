@@ -79,3 +79,9 @@ const sendAuthDetails = function(type) {
   const password = document.querySelector('input[name="password"]').value;
   handleXhrRequest(type, { username, password }, calledAfterAuth);
 };
+
+const sendLogoutRequest = function() {
+  handleXhrRequest('/logout', {}, () => {
+    loadLoginPage();
+  });
+};

@@ -9,6 +9,8 @@ const main = function(port = defaultPort) {
   app.locals.data = loadData(config['data_store']);
   app.locals.path = config['data_store'];
   app.locals.sessions = {};
+
+  // eslint-disable-next-line no-console
   app.listen(port, () => console.log(`listening to ${port}`));
 };
 const [, , port] = process.argv;

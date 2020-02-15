@@ -47,6 +47,7 @@ const loadTodoNav = function() {
             <div class="searchBy" data-searchby="Title"></div>
           </label>
         </div>
+        <button onclick="sendLogoutRequest()">logout</button>
       </div>`;
 };
 

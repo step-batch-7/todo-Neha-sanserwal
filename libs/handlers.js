@@ -132,10 +132,17 @@ const loginUser = function(req, res) {
   res.cookie('todo', req.sessions[username].currentSession).end();
 };
 
-const checkUserAccessability = function(req, res, next) {
+const logOutUser = function(req, res) {
   const cookie = req.cookies.todo;
   const currentUser = cookie.user;
-  if (req.sessions[currentUser].isEqualTo(cookie)) {
+  delete req.sessions[currentUser];
+  res.clearCookie('todo');
+  res.redirect('/');
+};
+
+const checkUserAccessability = function(req, res, next) {
+  const cookie = req.cookies.todo;
+  if (cookie && req.sessions[cookie.user].isEqualTo(cookie)) {
     return next();
   }
   res.status('400').send('Bad Request from login');
@@ -150,6 +157,7 @@ const loadUserData = function(req, res, next) {
 module.exports = {
   registerUser,
   loginUser,
+  logOutUser,
   checkAuthDetails,
   checkUserAccessability,
   loadUserData,

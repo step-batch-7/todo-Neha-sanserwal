@@ -28,6 +28,7 @@ app.post(
   handlers.hasOptions('username', 'password'),
   handlers.loginUser
 );
+app.post('/logout', handlers.logOutUser);
 app.use('/user', router);
 
 app.put('/*/', (req, res) => {
