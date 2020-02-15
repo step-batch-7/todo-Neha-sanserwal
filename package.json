@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha",
-    "start": "node server.js 8000 "
+    "test": "./testFile.sh",
+    "start": "export data_store=$(pwd)/docs/data.json; node server.js 8000 "
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "mocha": "^7.0.1",
+    "morgan": "^1.9.1",
     "nyc": "^15.0.0",
     "supertest": "^4.0.2"
   }

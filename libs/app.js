@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
+app.use(express.json({ extends: 'true' }));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.post(

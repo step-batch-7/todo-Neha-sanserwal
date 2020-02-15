@@ -9,6 +9,7 @@ const readTodoPage = function(todoLogs) {
 
 const serveTodoPage = function(req, res) {
   const todoPage = readTodoPage(req.todo);
+  res.setHeader('content-type', 'text/html');
   res.end(todoPage);
 };
 
