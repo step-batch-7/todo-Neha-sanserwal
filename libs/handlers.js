@@ -14,6 +14,13 @@ const serveTodoPage = function(req, res) {
   res.end(todoPage);
 };
 
+const attachLocalsToReq = function(req, res, next) {
+  req.data = req.app.locals.data;
+  req.path = req.app.locals.path;
+  req.writer = req.app.locals.writer;
+  req.sessions = req.app.locals.sessions;
+  next();
+};
 //____________________________bucket handlers_________________________
 
 const hasOptions = function(...args) {
@@ -134,10 +141,13 @@ const loginUser = function(req, res) {
 
 const logOutUser = function(req, res) {
   const cookie = req.cookies.todo;
+  if (!cookie) {
+    return res.status('400').send('bad request');
+  }
   const currentUser = cookie.user;
   delete req.sessions[currentUser];
   res.clearCookie('todo');
-  res.redirect('/');
+  res.redirect(307, '/');
 };
 
 const checkUserAccessability = function(req, res, next) {
@@ -155,6 +165,7 @@ const loadUserData = function(req, res, next) {
 };
 
 module.exports = {
+  attachLocalsToReq,
   registerUser,
   loginUser,
   logOutUser,

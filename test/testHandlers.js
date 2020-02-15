@@ -45,6 +45,12 @@ describe('GET request', function() {
         .expect('content-type', /text\/html/)
         .expect(200, done);
     });
+    it('should not serveTodo when the route is /todo and cookie is not set', done => {
+      request(app)
+        .get('/user/todo')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
   });
   it('should load css when browser ask for it', function(done) {
     request(app)
@@ -399,6 +405,125 @@ describe('POST request', function() {
         .set('cookie', cookie)
         .set('accept', 'application/json')
         .expect(200, done);
+    });
+  });
+  describe('/signup', function() {
+    beforeEach(() => {
+      app.locals.data = {
+        jane: {
+          username: 'jane',
+          password: 123,
+          todo: {}
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
+    it('should register user', function(done) {
+      request(app)
+        .post('/signup')
+        .send({ username: 'john', password: 123 })
+        .set('accept', 'application/json')
+        .expect(200, done);
+    });
+    it('should not register user if the user already has account', function(done) {
+      request(app)
+        .post('/signup')
+        .send({ username: 'jane', password: 123 })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+    it('should not register user if the there is no password', function(done) {
+      request(app)
+        .post('/signup')
+        .send({ username: 'jane' })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+    it('should not register user if the there is no username ', function(done) {
+      request(app)
+        .post('/signup')
+        .send({ password: '' })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+  });
+  describe('/login', function() {
+    beforeEach(() => {
+      app.locals.data = {
+        jane: {
+          username: 'jane',
+          password: 123,
+          todo: {}
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.writer = () => {};
+    });
+    it('should login user if user has valid account', function(done) {
+      request(app)
+        .post('/login')
+        .send({ username: 'jane', password: 123 })
+        .set('accept', 'application/json')
+        .expect(200, done);
+    });
+    it('should not login user if the user does not have account', function(done) {
+      request(app)
+        .post('/login')
+        .send({ username: 'john', password: 123 })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+    it('should not login user if the user entered wrong password', function(done) {
+      request(app)
+        .post('/login')
+        .send({ username: 'jane', password: 12 })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+    it('should not register user if the there is no password', function(done) {
+      request(app)
+        .post('/login')
+        .send({ username: 'jane' })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+    it('should not register user if the there is no username ', function(done) {
+      request(app)
+        .post('/login')
+        .send({ password: '' })
+        .set('accept', 'application/json')
+        .expect(400, done);
+    });
+  });
+  describe('/logout', function() {
+    let cookie;
+    beforeEach(() => {
+      const bucket = new Bucket('abc', 1001, {}, 2000);
+      app.locals.data = {
+        john: {
+          username: 'john',
+          password: 123,
+          todo: new TodoLogs({ 1001: bucket }, 1001)
+        }
+      };
+      app.locals.path = 'abc';
+      app.locals.sessions = { john: new Session(1, 'john') };
+      app.locals.writer = () => {};
+      cookie = 'todo=j%3A%7B%22id%22%3A1%2C%22user%22%3A%22john%22%7D';
+    });
+    it('should logout a user and delete the session', function(done) {
+      request(app)
+        .post('/logout')
+        .set('cookie', cookie)
+        .expect('content-type', /text\/plain/)
+        .expect(307, done);
+    });
+    it('should give bad request if try to logout a user without cookie', function(done) {
+      request(app)
+        .post('/logout')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
     });
   });
 });

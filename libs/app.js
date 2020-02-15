@@ -10,13 +10,7 @@ app.use(morgan('tiny'));
 app.use(express.json({ extends: 'true' }));
 app.use(cookieParser());
 app.use(express.static('public'));
-app.use((req, res, next) => {
-  req.data = req.app.locals.data;
-  req.path = req.app.locals.path;
-  req.writer = req.app.locals.writer;
-  req.sessions = req.app.locals.sessions;
-  next();
-});
+app.use(handlers.attachLocalsToReq);
 app.post(
   '/signup',
   handlers.checkAuthDetails,
