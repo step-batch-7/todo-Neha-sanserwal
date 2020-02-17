@@ -10,7 +10,7 @@ const handleXhrRequest = function(url, data, callback) {
 };
 
 const showPage = function(req) {
-  if (req.responseText === 'Bad Request') {
+  if (req.responseText === 'temporarily redirect' && req.status === 307) {
     loadLoginPage();
     return;
   }
@@ -85,12 +85,6 @@ const sendSearchRequest = function(event) {
 const sendAuthDetails = function(type) {
   const username = document.querySelector('input[name="username"]').value;
   const password = document.querySelector('input[name="password"]').value;
-  const confirmPass = document.querySelector('input[name="confirmPass"]');
-  if (confirmPass) {
-    if (confirmPass.value !== password) {
-      return showError('* Password did not matched');
-    }
-  }
   handleXhrRequest(type, { username, password }, calledAfterAuth);
 };
 
@@ -99,4 +93,13 @@ const sendLogoutRequest = function() {
     loadLoginPage();
     document.querySelector('.searchbar').remove();
   });
+};
+
+const checkUserAvailability = function(username) {
+  console.log(username);
+  handleXhrRequest(
+    '/checkUserAvailability',
+    { username },
+    calledAfterUserAvail
+  );
 };

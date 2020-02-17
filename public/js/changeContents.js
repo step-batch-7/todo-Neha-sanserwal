@@ -3,19 +3,14 @@ const loadSignUpPage = function() {
   todoPage.innerHTML = ` <div class="loginPage">
         <h1> Sign Up </h1>
         <div class="loginContainer">
-          <input type="text" placeholder="username" name="username"/>
+          <input type="text" onfocusout ='checkUserAvailability(this.value)' placeholder="username" name="username"/>
           <input type="password" placeholder="password" name="password"/>
-          <input type="password" placeholder="re-enter password" name ='confirmPass'/>
+          <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="re-enter password" name ='confirmPass'/>
           <div class = 'errorMsg'></div>
-          <button onclick="sendAuthDetails('/signup')">SIGN UP</button>
-          <div>Already have an account <a href="#" onclick="loadLoginPage()">Sign In</a> here</div>
+          <button onclick="sendAuthDetails('/signup')" id='signUpBtn'>SIGN UP</button>
+          <div>Already have an account <a href="" onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
       </div>`;
-};
-
-const showError = function(msg) {
-  const errorBox = document.querySelector('.errorMsg');
-  errorBox.innerHTML = msg;
 };
 
 const loadLoginPage = function() {
@@ -82,9 +77,36 @@ const showNewTaskForm = function(event) {
   taskInput.style.display = 'flex';
 };
 
-const calledAfterAuth = function(status, responseText) {
-  if (responseText === 'userNameAlreadyExists') {
-    return loadSignUpPage();
+const setMsg = function(msg, color) {
+  const errorBox = document.querySelector('.errorMsg');
+  errorBox.innerHTML = msg;
+  errorBox.style.color = color;
+};
+const showPassNotMatchError = function(confirmPass) {
+  const password = document.querySelector('input[name="password"]').value;
+  const signup = document.querySelector('#signUpBtn');
+  if (password !== confirmPass.value) {
+    setMsg(
+      'The password you entered did not matched. Please re-enter your password.',
+      'red'
+    );
+    signup.setAttribute('disabled', true);
+    return;
   }
-  serveTodo();
+  setMsg('password matched', 'green');
+  signup.removeAttribute('disabled');
+};
+
+const calledAfterAuth = function(status, responseText) {
+  if (status === 200) {
+    return serveTodo();
+  }
+  return loadLoginPage();
+};
+
+const calledAfterUserAvail = function(status, responseText) {
+  if (responseText === 'userAlreadyExists' && status === 422) {
+    return setMsg('username already exists', 'red');
+  }
+  setMsg('username available', 'green');
 };

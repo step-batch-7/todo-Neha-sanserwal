@@ -11,6 +11,7 @@ app.use(express.json({ extends: 'true' }));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use(handlers.attachLocalsToReq);
+app.post('/checkUserAvailability', handlers.checkUserAvailability);
 app.post(
   '/signup',
   handlers.checkAuthDetails,

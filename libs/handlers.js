@@ -107,13 +107,17 @@ const search = function(req, res) {
 };
 
 //________________________________auth__________________________
+const checkUserAvailability = function(req, res) {
+  if (req.body.username in req.data) {
+    return res.status('422').send('userAlreadyExists');
+  }
+  res.status('200').end();
+};
+
 const checkAuthDetails = function(req, res, next) {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status('400').send('bad request');
-  }
-  if (username in req.data) {
-    return res.status('400').send('userNameAlreadyExists');
   }
   next();
 };
@@ -155,7 +159,7 @@ const checkUserAccessability = function(req, res, next) {
   if (cookie && req.sessions[cookie.user].isEqualTo(cookie)) {
     return next();
   }
-  res.status('400').send('Bad Request');
+  res.status('307').send('temporarily redirect');
 };
 
 const loadUserData = function(req, res, next) {
@@ -169,6 +173,7 @@ module.exports = {
   registerUser,
   loginUser,
   logOutUser,
+  checkUserAvailability,
   checkAuthDetails,
   checkUserAccessability,
   loadUserData,
