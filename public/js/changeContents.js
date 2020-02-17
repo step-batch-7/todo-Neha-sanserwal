@@ -3,12 +3,16 @@ const loadSignUpPage = function() {
   todoPage.innerHTML = ` <div class="loginPage">
         <h1> Sign Up </h1>
         <div class="loginContainer">
-          <input type="text" onfocusout ='checkUserAvailability(this.value)' placeholder="username" name="username"/>
+          <input type="text" onfocusout ='checkUserAvailability(this.value)' placeholder="Username" name="username"/>
+          <div class = 'errorMsg' id = 'usernameMsg'></div>
           <input type="password" placeholder="password" name="password"/>
-          <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="re-enter password" name ='confirmPass'/>
-          <div class = 'errorMsg'></div>
-          <button onclick="sendAuthDetails('/signup')" id='signUpBtn' disabled>SIGN UP</button>
-          <div>Already have an account <a href="" onclick="loadLoginPage()">Sign In</a> here</div>
+          <div class = 'errorMsg' id = 'passwordError'></div>
+          <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="Confirm password" name ='confirmPass'/>
+          <div class = 'errorMsg' id = 'confirmPassMsg' ></div>
+          <div class = 'button'>
+            <button onclick="sendAuthDetails('/signup')" id='signUpBtn' disabled>SIGN UP</button>
+          </div>
+          <div class= 'authLink'>Already have an account? <a  onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
       </div>`;
 };
@@ -16,15 +20,18 @@ const loadSignUpPage = function() {
 const loadLoginPage = function() {
   const todoPage = document.querySelector('.todoPage');
   todoPage.innerHTML = `<div class="loginPage">
-        <h1>Log In</h1>
+        <h1>Sign In</h1>
         <div class="loginContainer">
-          <input type="text" onfocus="setMsg('')" placeholder="username" name="username"/>
-          <input type="password" onfocus="setMsg('')" placeholder="password" name="password" />
-          <div class = 'errorMsg'></div>
-          <button onclick="sendAuthDetails('/login')" id="loginBtn">SIGN IN</button>
-          <div>
-            Don't have account
-            <a href="#" onclick="loadSignUpPage()">Sign Up</a> here
+          <input type="text" onfocus="setMsg('')" placeholder="Username" name="username"/>
+          <div class = 'errorMsg' ></div>
+          <input type="password" onfocus="setMsg('')" placeholder="Password" name="password" />
+          <div class = 'errorMsg' id = 'loginMsg'></div>
+          <div class = 'button'>
+            <button onclick="sendAuthDetails('/login')" id="loginBtn">SIGN IN</button>
+          </div>
+          <div class= 'authLink'>
+            Don't have account? 
+            <a  onclick="loadSignUpPage()">Sign Up</a> here
           </div>
         </div>
       </div>`;
@@ -78,8 +85,8 @@ const showNewTaskForm = function(event) {
   taskInput.style.display = 'flex';
 };
 
-const setMsg = function(msg, color) {
-  const errorBox = document.querySelector('.errorMsg');
+const setMsg = function(id, msg, color) {
+  const errorBox = document.querySelector(`#${id}`);
   errorBox.innerHTML = msg;
   errorBox.style.color = color;
 };
@@ -88,6 +95,7 @@ const showPassNotMatchError = function(confirmPass) {
   const signup = document.querySelector('#signUpBtn');
   if (password !== confirmPass.value) {
     setMsg(
+      'confirmPassMsg',
       'The password you entered did not matched. Please re-enter your password.',
       'red'
     );
@@ -99,7 +107,7 @@ const showPassNotMatchError = function(confirmPass) {
 
 const calledAfterAuth = function(status, responseText) {
   if (status === 403 && responseText === 'invalidUserNameOrPassword') {
-    return setMsg('invalid userName or Password', 'red');
+    return setMsg('loginMsg', 'invalid userName or Password', 'red');
   }
   return serveTodo();
 };
@@ -107,8 +115,8 @@ const calledAfterAuth = function(status, responseText) {
 const calledAfterUserAvail = function(status, responseText) {
   const signup = document.querySelector('#signUpBtn');
   if (responseText === 'userAlreadyExists' && status === 422) {
-    return setMsg('username already exists', 'red');
+    return setMsg('usernameMsg', 'username already exists', 'red');
   }
-  setMsg('username available', 'green');
+  setMsg('usernameMsg', 'username available', 'green');
   signup.removeAttribute('disabled');
 };
