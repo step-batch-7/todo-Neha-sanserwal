@@ -14,32 +14,119 @@
   width: 98%;
   margin: 0 auto;
 }
-.searchBar {
-  display: flex;
-  align-items: center;
-}
-.searchBar > input {
-  font-family: sans-serif, FontAwesome;
-  border: none;
-  height: 30px;
-  width: 300px;
-  font-size: 15px;
-  border-bottom: 2px solid lightgray;
-  background: none;
-}
-
-.todoPage {
-  width: 70%;
-  margin-top: 7%;
-}
-
 .headers > .heading {
   display: flex;
   flex-flow: column;
   flex-wrap: wrap;
   align-items: center;
+  font-size: 2rem;
+  font-weight: 700;
   font-family: sans-serif;
+  color: #4f4f4d;
 }
+.todoNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 30%;
+}
+.searchBar {
+  width: 70%;
+  display: flex;
+  align-items: center;
+}
+.searchBar > input {
+  outline: none;
+  padding: 0 1%;
+  font-family: sans-serif, FontAwesome;
+  border: none;
+  height: 30px;
+  width: 70%;
+  font-size: 15px;
+  border-bottom: 2px solid lightgray;
+  background: none;
+}
+.toggle {
+  padding: 0% 3%;
+}
+.searchBar > input:focus {
+  border-bottom: 2px solid #09d3ac;
+}
+#check {
+  display: none;
+}
+.toggle > label {
+  display: flex;
+  flex-flow: row;
+  height: 30px;
+  width: 100px;
+  border: 1px solid lightgray;
+  border-radius: 30px;
+}
+
+.toggle > label > .searchBy::before {
+  background: gray;
+  color: white;
+  content: 'Title';
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+
+  height: 30px;
+  width: 60px;
+  border-radius: 15px;
+}
+
+#check:checked + label {
+  flex-flow: row-reverse;
+  border: 1px solid #09d3ac;
+}
+
+#check:checked + label > .searchBy::before {
+  background: #09d3ac;
+
+  color: white;
+  content: 'Task';
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+  height: 30px;
+  width: 60px;
+  border-radius: 15px;
+}
+
+.logoutBtn {
+  width: 20%;
+}
+.logoutBtn > button {
+  width: 100%;
+  height: 4vh;
+  font-weight: 600;
+  border: 2px solid red;
+  font-size: 18px;
+  text-transform: capitalize;
+  border-radius: 5px;
+  color: red;
+}
+.logoutBtn > button:hover {
+  color: white;
+  background-color: rgb(253, 94, 94);
+  border-color: rgb(253, 94, 94);
+}
+.todoPage {
+  width: 70%;
+  margin-top: 7%;
+}
+
+.input-box {
+  outline: none;
+}
+.input-box:focus {
+  border-color: #09d3ac;
+}
+
 .input-box {
   display: flex;
   flex-flow: column;
@@ -51,7 +138,7 @@
   height: 40px;
   padding: 5px;
   margin-bottom: 9px;
-  border: 0.5px solid lightgray;
+  border: 1.5px solid lightgray;
 }
 
 .todo-form {
@@ -97,7 +184,8 @@
 }
 .head {
   background: #09d3ac;
-  padding: 5px;
+  padding: 0 1%;
+  padding-left: 2%;
   color: white;
   align-items: center;
   display: flex;
@@ -148,6 +236,7 @@
   background: white;
   display: flex;
   width: 100%;
+  padding: 2% 0;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   flex-wrap: wrap;
@@ -156,6 +245,7 @@
 .item {
   display: flex;
   flex: 1 1 50%;
+  height: 2vh;
   width: 98%;
   flex-flow: row;
   flex-wrap: wrap;
@@ -200,12 +290,17 @@
   padding: 5px;
 }
 .newTask > .input > input {
+  outline: none;
   font-size: 14px;
   width: 100%;
   height: 31px;
   border-radius: 5px;
   border: none;
   border: 2px solid lightgray;
+  padding-left: 5px;
+}
+.newTask > .input > input:focus {
+  border-color: #09d3ac;
 }
 
 .newTask > .input {
@@ -232,49 +327,4 @@
 .newTask > .operations > .fa-times:hover {
   font-size: 1.7rem;
   color: rgb(215, 49, 49);
-}
-
-#check {
-  display: none;
-}
-.toggle > label {
-  display: flex;
-  flex-flow: row;
-  height: 30px;
-  width: 100px;
-  border: 1px solid lightgray;
-  border-radius: 30px;
-}
-
-.toggle > label > .searchBy::before {
-  background: gray;
-  color: white;
-  content: 'Title';
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  text-align: center;
-
-  height: 30px;
-  width: 60px;
-  border-radius: 15px;
-}
-
-#check:checked + label {
-  flex-flow: row-reverse;
-  border: 1px solid #09d3ac;
-}
-
-#check:checked + label > .searchBy::before {
-  background: #09d3ac;
-
-  color: white;
-  content: 'Task';
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  text-align: center;
-  height: 30px;
-  width: 60px;
-  border-radius: 15px;
 }

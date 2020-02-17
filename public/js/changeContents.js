@@ -40,23 +40,28 @@ const loadLoginPage = function() {
 const loadTodoNav = function() {
   const nav = document.querySelector('.headers');
   nav.innerHTML = `<div class="heading">
-        <h1>POST IT</h1>
+        POST IT
       </div>
-      <div class="searchBar">
-        <input
-          required
-          type="text"
-          value=""
-          onkeyup="sendSearchRequest(event)"
-          placeholder="&#xF002; Search"
-        />
-        <div class="toggle">
-          <input type="checkbox" id="check" />
-          <label for="check" onclick="changeSearchBy()">
-            <div class="searchBy" data-searchby="Title"></div>
-          </label>
+      <div class='todoNav'>
+        <div class="searchBar">
+          <input
+            required
+            type="text"
+            value=""
+            onkeyup="sendSearchRequest(event)"
+            placeholder="&#xF002; Search"
+          />
+          <div class="toggle">
+            <input type="checkbox" id="check" />
+            <label for="check" onclick="changeSearchBy()">
+              <div class="searchBy" data-searchby="Title"></div>
+            </label>
+          </div>
         </div>
+      <div class='logoutBtn'>
         <button onclick="sendLogoutRequest()">logout</button>
+      </div>
+      </div>
       </div>`;
 };
 

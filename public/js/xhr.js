@@ -91,7 +91,7 @@ const sendAuthDetails = function(type) {
 const sendLogoutRequest = function() {
   handleXhrRequest('/logout', {}, () => {
     loadLoginPage();
-    document.querySelector('.searchbar').remove();
+    document.querySelector('.todoNav').remove();
   });
 };
 
