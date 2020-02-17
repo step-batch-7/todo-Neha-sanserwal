@@ -96,7 +96,6 @@ const sendLogoutRequest = function() {
 };
 
 const checkUserAvailability = function(username) {
-  console.log(username);
   handleXhrRequest(
     '/checkUserAvailability',
     { username },

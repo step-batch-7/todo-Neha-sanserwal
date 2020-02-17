@@ -134,10 +134,10 @@ const loginUser = function(req, res) {
   const { username, password } = req.body;
   const data = req.data;
   if (!(username in data)) {
-    return res.status('400').send('invalidUserName');
+    return res.status('403').send('invalidUserNameOrPassword');
   }
   if (data[username].password !== password) {
-    return res.status('400').send('wrongPassword');
+    return res.status('403').send('invalidUserNameOrPassword');
   }
   req.sessions[username] = Session.createSession(username);
   res.cookie('todo', req.sessions[username].currentSession).end();

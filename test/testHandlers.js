@@ -49,7 +49,7 @@ describe('GET request', function() {
       request(app)
         .get('/user/todo')
         .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(307, done);
     });
   });
   it('should load css when browser ask for it', function(done) {
@@ -419,7 +419,7 @@ describe('POST request', function() {
       app.locals.path = 'abc';
       app.locals.writer = () => {};
     });
-    it('should register user', function(done) {
+    it('should register user with password and username', function(done) {
       request(app)
         .post('/signup')
         .send({ username: 'john', password: 123 })
@@ -428,10 +428,17 @@ describe('POST request', function() {
     });
     it('should not register user if the user already has account', function(done) {
       request(app)
-        .post('/signup')
+        .post('/checkUserAvailability')
         .send({ username: 'jane', password: 123 })
         .set('accept', 'application/json')
-        .expect(400, done);
+        .expect(422, done);
+    });
+    it('should allow user to continue if the user does not have account', function(done) {
+      request(app)
+        .post('/checkUserAvailability')
+        .send({ username: 'john', password: 123 })
+        .set('accept', 'application/json')
+        .expect(200, done);
     });
     it('should not register user if the there is no password', function(done) {
       request(app)

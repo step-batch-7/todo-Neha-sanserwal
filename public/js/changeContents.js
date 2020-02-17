@@ -7,7 +7,7 @@ const loadSignUpPage = function() {
           <input type="password" placeholder="password" name="password"/>
           <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="re-enter password" name ='confirmPass'/>
           <div class = 'errorMsg'></div>
-          <button onclick="sendAuthDetails('/signup')" id='signUpBtn'>SIGN UP</button>
+          <button onclick="sendAuthDetails('/signup')" id='signUpBtn' disabled>SIGN UP</button>
           <div>Already have an account <a href="" onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
       </div>`;
@@ -18,9 +18,10 @@ const loadLoginPage = function() {
   todoPage.innerHTML = `<div class="loginPage">
         <h1>Log In</h1>
         <div class="loginContainer">
-          <input type="text" placeholder="username" name="username"/>
-          <input type="password" placeholder="password" name="password" />
-          <button onclick="sendAuthDetails('/login')">SIGN IN</button>
+          <input type="text" onfocus="setMsg('')" placeholder="username" name="username"/>
+          <input type="password" onfocus="setMsg('')" placeholder="password" name="password" />
+          <div class = 'errorMsg'></div>
+          <button onclick="sendAuthDetails('/login')" id="loginBtn">SIGN IN</button>
           <div>
             Don't have account
             <a href="#" onclick="loadSignUpPage()">Sign Up</a> here
@@ -90,23 +91,24 @@ const showPassNotMatchError = function(confirmPass) {
       'The password you entered did not matched. Please re-enter your password.',
       'red'
     );
-    signup.setAttribute('disabled', true);
-    return;
+    return signup.setAttribute('disabled', true);
   }
   setMsg('password matched', 'green');
   signup.removeAttribute('disabled');
 };
 
 const calledAfterAuth = function(status, responseText) {
-  if (status === 200) {
-    return serveTodo();
+  if (status === 403 && responseText === 'invalidUserNameOrPassword') {
+    return setMsg('invalid userName or Password', 'red');
   }
-  return loadLoginPage();
+  return serveTodo();
 };
 
 const calledAfterUserAvail = function(status, responseText) {
+  const signup = document.querySelector('#signUpBtn');
   if (responseText === 'userAlreadyExists' && status === 422) {
     return setMsg('username already exists', 'red');
   }
   setMsg('username available', 'green');
+  signup.removeAttribute('disabled');
 };
