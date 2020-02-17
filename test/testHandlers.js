@@ -25,10 +25,9 @@ describe('GET request', function() {
       john: { username: 'john', password: 123, todo: new TodoLogs({}, 1000) }
     };
     app.locals.sessions = {
-      john: new Session(1581756499018, 'john')
+      '1581756499018': new Session(1581756499018, 'john')
     };
-    cookie =
-      'todo=j%3A%7B%22id%22%3A1581756499018%2C%22user%22%3A%22john%22%7D';
+    cookie = 'user=1581756499018';
   });
 
   describe('homePage', function() {
@@ -113,8 +112,10 @@ describe('POST request', function() {
       };
       app.locals.path = 'abc';
       app.locals.writer = () => {};
-      cookie =
-        'todo=j%3A%7B%22id%22%3A1581756499018%2C%22user%22%3A%22john%22%7D';
+      app.locals.sessions = {
+        '1581756499018': new Session(1581756499018, 'john')
+      };
+      cookie = 'user=1581756499018';
     });
 
     it('should save the todo ', function(done) {
@@ -479,14 +480,14 @@ describe('POST request', function() {
         .post('/login')
         .send({ username: 'john', password: 123 })
         .set('accept', 'application/json')
-        .expect(400, done);
+        .expect(403, done);
     });
     it('should not login user if the user entered wrong password', function(done) {
       request(app)
         .post('/login')
         .send({ username: 'jane', password: 12 })
         .set('accept', 'application/json')
-        .expect(400, done);
+        .expect(403, done);
     });
     it('should not register user if the there is no password', function(done) {
       request(app)
@@ -515,9 +516,11 @@ describe('POST request', function() {
         }
       };
       app.locals.path = 'abc';
-      app.locals.sessions = { john: new Session(1, 'john') };
       app.locals.writer = () => {};
-      cookie = 'todo=j%3A%7B%22id%22%3A1%2C%22user%22%3A%22john%22%7D';
+      app.locals.sessions = {
+        '1581756499018': new Session(1581756499018, 'john')
+      };
+      cookie = 'user=1581756499018';
     });
     it('should logout a user and delete the session', function(done) {
       request(app)

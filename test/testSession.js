@@ -16,20 +16,17 @@ describe('Session', function() {
   describe('isEqualTo', function() {
     it('should give true if the object value are equal to the session values', function() {
       const actual = new Session(1, 'john');
-      const cookie = { id: 1, user: 'john' };
-      assert.ok(actual.isEqualTo(cookie));
+      assert.ok(actual.isEqualTo('1'));
     });
     it('should give false if the object value are not equal to the session values', function() {
       const actual = new Session(1, 'john');
-      const cookie = { id: 0, user: 'john' };
-      assert.notOk(actual.isEqualTo(cookie));
+      assert.notOk(actual.isEqualTo('2'));
     });
   });
-  describe('currentSession', function() {
+  describe('currentSessionId', function() {
     it('should give the sessionId and sessionUser ', function() {
       const actual = new Session(1, 'john');
-      const expected = { id: 1, user: 'john' };
-      assert.deepStrictEqual(actual.currentSession, expected);
+      assert.deepStrictEqual(actual.currentSessionId, 1);
     });
   });
 });

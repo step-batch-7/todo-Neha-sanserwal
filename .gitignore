@@ -4,3 +4,4 @@ error.log
 info.log
 docs/data.json
 coverage
+public/.DS_Store

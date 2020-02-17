@@ -9,11 +9,11 @@ class Session {
     return new Session(randomId, user);
   }
 
-  get currentSession() {
-    return { id: this.sessionId, user: this.sessionUser };
+  get currentSessionId() {
+    return this.sessionId;
   }
-  isEqualTo(cookie) {
-    return cookie.user === this.sessionUser && cookie.id === this.sessionId;
+  isEqualTo(id) {
+    return parseInt(id) === this.sessionId;
   }
 }
 

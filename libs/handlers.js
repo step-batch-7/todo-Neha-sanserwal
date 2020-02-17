@@ -139,31 +139,32 @@ const loginUser = function(req, res) {
   if (data[username].password !== password) {
     return res.status('403').send('invalidUserNameOrPassword');
   }
-  req.sessions[username] = Session.createSession(username);
-  res.cookie('todo', req.sessions[username].currentSession).end();
+  const session = Session.createSession(username);
+  req.sessions[session.currentSessionId] = session;
+  res.cookie('user', session.sessionId).end();
 };
 
 const logOutUser = function(req, res) {
-  const cookie = req.cookies.todo;
-  if (!cookie) {
+  const id = req.cookies.user;
+  if (!req.sessions[id]) {
     return res.status('400').send('bad request');
   }
-  const currentUser = cookie.user;
-  delete req.sessions[currentUser];
-  res.clearCookie('todo');
+  delete req.sessions[id];
+  res.clearCookie('user');
   res.redirect(307, '/');
 };
 
 const checkUserAccessability = function(req, res, next) {
-  const cookie = req.cookies.todo;
-  if (cookie && req.sessions[cookie.user].isEqualTo(cookie)) {
+  const id = req.cookies.user;
+  if (req.sessions[id] && req.sessions[id].isEqualTo(id)) {
     return next();
   }
-  res.status('307').send('temporarily redirect');
+  res.status(307).send('temporarily redirect');
 };
 
 const loadUserData = function(req, res, next) {
-  const user = req.cookies.todo.user;
+  const id = req.cookies.user;
+  const user = req.sessions[id].sessionUser;
   req.todo = req.data[user].todo;
   next();
 };
