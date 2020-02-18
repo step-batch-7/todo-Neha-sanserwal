@@ -3,14 +3,15 @@ const loadSignUpPage = function() {
   todoPage.innerHTML = ` <div class="loginPage">
         <h1> Sign Up </h1>
         <div class="loginContainer">
-          <input type="text" onfocusout ='checkUserAvailability(this.value)' placeholder="Username" name="username"/>
+          <input type="text" onfocusout ='checkUserAvailability(this.value)' onfocus="clearErrorMsg('commonMsg','usernameMsg')" placeholder="Username" name="username"/>
           <div class = 'errorMsg' id = 'usernameMsg'></div>
-          <input type="password" placeholder="password" name="password" onkeyup= "showPassNotMatchError(this)"/>
+          <input type="password" placeholder="Password" name="password" onfocus="clearErrorMsg('commonMsg','passwordMsg')" onkeyup= "showPassNotMatchError(this)"/>
           <div class = 'errorMsg' id = 'passwordMsg'></div>
-          <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="Confirm password" name ='confirmPass'/>
+          <input type="password" onkeyup= "showPassNotMatchError(this)" onfocus="clearErrorMsg('commonMsg','confirmPassMsg')" placeholder="Confirm password" name ='confirmPass'/>
           <div class = 'errorMsg' id = 'confirmPassMsg' ></div>
+          <div class = 'errorMsg' id = 'commonMsg' ></div>
           <div class = 'button'>
-            <button onclick="sendAuthDetails('/signup')" id='signUpBtn' disabled>SIGN UP</button>
+            <button onclick="checkErrorInAuth('/signup')" id='signUpBtn' >SIGN UP</button>
           </div>
           <div class= 'authLink'>Already have an account? <a  onclick="loadLoginPage()">Sign In</a> here</div>
         </div>
@@ -90,39 +91,9 @@ const showNewTaskForm = function(event) {
   taskInput.style.display = 'flex';
 };
 
-const setMsg = function(id, msg, color) {
-  const errorBox = document.querySelector(`#${id}`);
-  errorBox.innerHTML = msg;
-  errorBox.style.color = color;
-};
-const showPassNotMatchError = function() {
-  const confirmPass = document.querySelector('input[name="confirmPass"]').value;
-  const password = document.querySelector('input[name="password"]').value;
-  const signup = document.querySelector('#signUpBtn');
-  if (password !== confirmPass) {
-    setMsg(
-      'confirmPassMsg',
-      'The password you entered did not matched. Please re-enter your password.',
-      'red'
-    );
-    return signup.setAttribute('disabled', true);
-  }
-  setMsg('confirmPassMsg', 'password matched', 'green');
-  signup.removeAttribute('disabled');
-};
-
 const calledAfterAuth = function(status, responseText) {
   if (status === 403 && responseText === 'invalidUserNameOrPassword') {
     return setMsg('loginMsg', 'invalid userName or Password', 'red');
   }
   return serveTodo();
-};
-
-const calledAfterUserAvail = function(status, responseText) {
-  const signup = document.querySelector('#signUpBtn');
-  if (responseText === 'userAlreadyExists' && status === 422) {
-    return setMsg('usernameMsg', 'username already exists', 'red');
-  }
-  setMsg('usernameMsg', 'username available', 'green');
-  signup.removeAttribute('disabled');
 };

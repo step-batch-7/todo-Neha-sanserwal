@@ -96,6 +96,9 @@ const sendLogoutRequest = function() {
 };
 
 const checkUserAvailability = function(username) {
+  if (!username) {
+    return setMsg('usernameMsg', 'Please enter a username', 'red');
+  }
   handleXhrRequest(
     '/checkUserAvailability',
     { username },
