@@ -5,8 +5,8 @@ const loadSignUpPage = function() {
         <div class="loginContainer">
           <input type="text" onfocusout ='checkUserAvailability(this.value)' placeholder="Username" name="username"/>
           <div class = 'errorMsg' id = 'usernameMsg'></div>
-          <input type="password" placeholder="password" name="password"/>
-          <div class = 'errorMsg' id = 'passwordError'></div>
+          <input type="password" placeholder="password" name="password" onkeyup= "showPassNotMatchError(this)"/>
+          <div class = 'errorMsg' id = 'passwordMsg'></div>
           <input type="password" onkeyup= "showPassNotMatchError(this)" placeholder="Confirm password" name ='confirmPass'/>
           <div class = 'errorMsg' id = 'confirmPassMsg' ></div>
           <div class = 'button'>
@@ -22,9 +22,9 @@ const loadLoginPage = function() {
   todoPage.innerHTML = `<div class="loginPage">
         <h1>Sign In</h1>
         <div class="loginContainer">
-          <input type="text" onfocus="setMsg('')" placeholder="Username" name="username"/>
+          <input type="text" onfocus="setMsg('loginMsg','')" placeholder="Username" name="username"/>
           <div class = 'errorMsg' ></div>
-          <input type="password" onfocus="setMsg('')" placeholder="Password" name="password" />
+          <input type="password" onfocus="setMsg('loginMsg','')" placeholder="Password" name="password" />
           <div class = 'errorMsg' id = 'loginMsg'></div>
           <div class = 'button'>
             <button onclick="sendAuthDetails('/login')" id="loginBtn">SIGN IN</button>
@@ -95,10 +95,11 @@ const setMsg = function(id, msg, color) {
   errorBox.innerHTML = msg;
   errorBox.style.color = color;
 };
-const showPassNotMatchError = function(confirmPass) {
+const showPassNotMatchError = function() {
+  const confirmPass = document.querySelector('input[name="confirmPass"]').value;
   const password = document.querySelector('input[name="password"]').value;
   const signup = document.querySelector('#signUpBtn');
-  if (password !== confirmPass.value) {
+  if (password !== confirmPass) {
     setMsg(
       'confirmPassMsg',
       'The password you entered did not matched. Please re-enter your password.',
@@ -106,7 +107,7 @@ const showPassNotMatchError = function(confirmPass) {
     );
     return signup.setAttribute('disabled', true);
   }
-  setMsg('password matched', 'green');
+  setMsg('confirmPassMsg', 'password matched', 'green');
   signup.removeAttribute('disabled');
 };
 
