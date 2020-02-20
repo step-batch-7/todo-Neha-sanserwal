@@ -33,9 +33,10 @@ const readTodoList = function(bucket, reader) {
 };
 const readCards = function(allTodo, reader) {
   let todoCards = '';
-  for (const key in allTodo) {
+  const keys = Object.keys(allTodo).reverse();
+  keys.forEach(key => {
     todoCards += readTodoList(allTodo[key], reader);
-  }
+  });
   return todoCards;
 };
 const loadTodoPage = function(allTodo, loadFile) {

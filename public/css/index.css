@@ -245,8 +245,8 @@
 .item {
   display: flex;
   flex: 1 1 50%;
-  height: 2vh;
-  width: 98%;
+  height: auto;
+  width: 97%;
   flex-flow: row;
   flex-wrap: wrap;
   padding: 5px;
